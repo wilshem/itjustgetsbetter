@@ -67,8 +67,22 @@
     .panel-close:hover { color: var(--metal-2); }
     .constellation-legend { padding: 28px 60px 72px; display: flex; gap: 36px; align-items: center; }
     .legend-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--metal-4); }
-    .legend-item { display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; }
+    .legend-item { display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; padding: 6px 12px; border: 1px solid transparent; transition: all 0.25s ease; }
+    .legend-item:hover { border-color: currentColor; background: rgba(255,255,255,0.03); }
+    .legend-item.active { border-color: currentColor; background: rgba(255,255,255,0.05); }
     .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+    #constellation-summary { margin: 0 60px 0; border: 1px solid var(--metal-4); padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.45s ease, padding 0.3s ease, margin-bottom 0.3s ease; }
+    #constellation-summary.visible { max-height: 400px; padding: 32px 40px 36px; margin-bottom: 32px; }
+    .cs-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
+    .cs-title { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; }
+    .cs-title.tech { color: var(--tech); } .cs-title.capital { color: var(--capital); } .cs-title.culture { color: var(--culture); }
+    .cs-close { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); cursor: pointer; transition: color 0.2s; }
+    .cs-close:hover { color: var(--metal-2); }
+    .cs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .cs-desc { font-family: "Cormorant Garamond", serif; font-size: 17px; color: var(--metal-3); line-height: 1.75; }
+    .cs-nodes-label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); margin-bottom: 10px; }
+    .cs-nodes-list { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
+    .cs-nodes-list li { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--metal-4); color: var(--metal-3); }
     #philosophy { padding: 140px 60px; max-width: 1040px; }
     .philosophy-label { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--metal-4); margin-bottom: 48px; }
     .philosophy-quote { font-family: "Cormorant Garamond", serif; font-size: clamp(28px, 3.5vw, 54px); font-weight: 300; line-height: 1.3; color: var(--metal-2); }
@@ -88,10 +102,11 @@
     @media (max-width: 768px) {
       nav { padding: 20px 24px; } .nav-links { display: none; }
       #hero { padding: 0 24px; } .scroll-hint { left: 24px; }
-      .hero-filters { flex-wrap: wrap; gap: 12px; }
+      .hero-filters { flex-wrap: wrap; gap: 12px; } .hero-logo { display: none; }
       .constellation-header { padding: 0 24px 32px; flex-direction: column; gap: 16px; }
       #star-panel { padding: 20px 24px 24px; } .panel-name { font-size: 20px; }
       .constellation-legend { padding: 24px 24px 48px; flex-wrap: wrap; }
+      #constellation-summary { margin: 0 24px 0; } .cs-body { grid-template-columns: 1fr; }
       #philosophy { padding: 80px 24px; }
       #contact { padding: 80px 24px 60px; } .contact-links { flex-direction: column; gap: 24px; }
       footer { flex-direction: column; gap: 16px; text-align: center; }
@@ -149,7 +164,7 @@
     <h2 class="constellation-title">The Web</h2>
     <div class="constellation-hint">
       Select a star to explore<br/>
-      Stars shared across constellations bridge multiple worlds
+      Click a constellation below to highlight it
     </div>
   </div>
   <div id="star-map-wrapper" style="position:relative;">
@@ -165,9 +180,28 @@
   </div>
   <div class="constellation-legend">
     <span class="legend-label">Constellations</span>
-    <div class="legend-item" style="color:var(--tech)"><div class="legend-dot" style="background:var(--tech);box-shadow:0 0 5px var(--tech)"></div>Technology</div>
-    <div class="legend-item" style="color:var(--capital)"><div class="legend-dot" style="background:var(--capital);box-shadow:0 0 5px var(--capital)"></div>Capital</div>
-    <div class="legend-item" style="color:var(--culture)"><div class="legend-dot" style="background:var(--culture);box-shadow:0 0 5px var(--culture)"></div>Culture</div>
+    <div class="legend-item" data-type="tech" style="color:var(--tech)">
+      <div class="legend-dot" style="background:var(--tech);box-shadow:0 0 5px var(--tech)"></div>Technology
+    </div>
+    <div class="legend-item" data-type="capital" style="color:var(--capital)">
+      <div class="legend-dot" style="background:var(--capital);box-shadow:0 0 5px var(--capital)"></div>Capital
+    </div>
+    <div class="legend-item" data-type="culture" style="color:var(--culture)">
+      <div class="legend-dot" style="background:var(--culture);box-shadow:0 0 5px var(--culture)"></div>Culture
+    </div>
+  </div>
+  <div id="constellation-summary">
+    <div class="cs-header">
+      <div class="cs-title" id="cs-title"></div>
+      <div class="cs-close" id="cs-close">&#x2715; close</div>
+    </div>
+    <div class="cs-body">
+      <div class="cs-desc" id="cs-desc"></div>
+      <div class="cs-nodes">
+        <div class="cs-nodes-label">Nodes</div>
+        <ul class="cs-nodes-list" id="cs-nodes-list"></ul>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -176,288 +210,309 @@
 <section id="philosophy">
   <div class="philosophy-label">Foundation</div>
   <blockquote class="philosophy-quote">
-    "Faith taught me to look for the inevitable. Entertainment and technology showed me the value of attention. And every room I was not supposed to be in taught me <em>the characteristics of who should be.</em>"
+    &#x201C;Faith taught me to look for the inevitable. Entertainment and technology showed me the value of attention. And every room I was not supposed to be in taught me <em>the characteristics of who should be.</em>&#x201D;
   </blockquote>
-  <div class="philosophy-attr">&mdash; Wilshem A. Pennick</div>
+  <div class="philosophy-attr">&#x2014; Wilshem A. Pennick</div>
 </section>
 
 <div class="section-divider"></div>
 
 <section id="contact">
   <h2 class="contact-header">
-    If you're in the room,<br/>
-    <em>let's connect.</em>
+    If you&#x27;re in the room,<br/>
+    <em>let&#x27;s connect.</em>
   </h2>
   <div class="contact-links">
-    <a href="mailto:wilshem@itjustgetsbetter.org" class="contact-link">Email</a>
+    <a href="#" id="email-link" class="contact-link">Email</a>
     <a href="https://www.linkedin.com/in/wilshem/" target="_blank" class="contact-link">LinkedIn</a>
   </div>
   <footer>
     <div class="footer-mark">It Just Gets Better</div>
-    <div class="footer-copy">&copy; 2026 &middot; It Just Gets Better LLC</div>
+    <div class="footer-copy">&#x00A9; 2026 &#x00B7; It Just Gets Better LLC</div>
   </footer>
 </section>
 
 <script>
-var COLORS = { tech: '#7aafc4', capital: '#c4a45a', culture: '#9f8fc4' };
+(function() {
+  var COLORS = { tech: '#7aafc4', capital: '#c4a45a', culture: '#9f8fc4' };
 
-var CONSTELLATION_DATA = {
-  tech: {
-    label: 'Technology',
-    network: ['Embry-Riddle Aeronautical University','Neural Earth','Microtron AI',"Ascension St. Vincent's",'Health Equity x AI Task Force','Cxmmunity','Blacks in Technology'],
-    submarkets: ['Aerospace & Aviation','Geospatial Intelligence','Weapons Development','Medical AI','Health Equity','Digital Equity','Defense Technology','Operating Systems','Space Operations']
-  },
-  capital: {
-    label: 'Capital',
-    network: ['It Just Gets Better LLC','Town of Marineland','VyStar Credit Union','Advanz LLC','Promising People','Health Equity x AI Task Force','Microtron AI'],
-    submarkets: ['Municipal Finance','Venture Advisory','MedTech Commercialization','Financial Literacy','Digital Equity','Health Equity','Small Business','Veteran-Owned Business','Seed-Stage Startups']
-  },
-  culture: {
-    label: 'Culture',
-    network: ['Florida State University','Better / Better Music','Close Collective','Cxmmunity','Cxmmunity Foundation','Blacks in Technology','Operation New Hope'],
-    submarkets: ['Gospel','Hip-Hop','Grammy Academy','Music Distribution','Influencer Marketing','Gaming','HBCU','Reentry & Reform','Tour Management','Reality Television','College Media']
-  }
-};
-
-var activeFilterBtn = null;
-
-function setupFilterButtons() {
-  var btns = document.querySelectorAll('.filter-btn');
-  btns.forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.stopPropagation();
-      var panel = document.getElementById('filter-panel');
-      var type = btn.dataset.constellation;
-      if (activeFilterBtn === btn && panel.classList.contains('visible')) {
-        panel.classList.remove('visible');
-        btn.classList.remove('active');
-        activeFilterBtn = null;
-        return;
-      }
-      if (activeFilterBtn) activeFilterBtn.classList.remove('active');
-      activeFilterBtn = btn;
-      btn.classList.add('active');
-      var data = CONSTELLATION_DATA[type];
-      var label = document.getElementById('fp-label');
-      label.textContent = data.label;
-      label.className = 'fp-label ' + type;
-      document.getElementById('fp-network-list').innerHTML = data.network.map(function(n){ return '<li>' + n + '</li>'; }).join('');
-      document.getElementById('fp-tags').innerHTML = data.submarkets.map(function(m){ return '<span class="fp-tag">' + m + '</span>'; }).join('');
-      panel.classList.add('visible');
-    });
-  });
-
-  document.addEventListener('click', function(e) {
-    if (!e.target.closest('.filter-btn') && !e.target.closest('#filter-panel')) {
-      document.getElementById('filter-panel').classList.remove('visible');
-      if (activeFilterBtn) { activeFilterBtn.classList.remove('active'); activeFilterBtn = null; }
+  var CDATA = {
+    tech: {
+      label: 'Technology',
+      summary: 'The systems that govern the future are being built right now in labs, classified rooms, and codebases that nobody has seen yet. This constellation lives inside the work.',
+      network: ['Embry-Riddle Aeronautical University','Neural Earth','Microtron AI','Ascension St. Vincents','Health Equity x AI Task Force','Cxmmunity','Blacks in Technology'],
+      submarkets: ['Aerospace & Aviation','Geospatial Intelligence','Operating Systems','Military Tech Development','Medical AI & Robotics','Immersive Gaming Labs','Technology Skills Training']
+    },
+    capital: {
+      label: 'Capital',
+      summary: 'Money follows attention. Attention follows trust. This constellation was built in the rooms where both were already in motion and where the next deal is already being structured before anyone announces it.',
+      network: ['It Just Gets Better LLC','Town of Marineland','VyStar Credit Union','Advanz LLC','Promising People','Health Equity x AI Task Force','Microtron AI'],
+      submarkets: ['Creative Financing','Venture Advisory','Municipal Finance','Credit Products','P2P Partnerships','Private Placements','Research & Development','Seed-to-Series A Startups']
+    },
+    culture: {
+      label: 'Culture',
+      summary: 'Culture is not content. It is the operating system underneath everything else. This constellation runs through every format that has ever moved a room and the people who know how to do it again.',
+      network: ['Florida State University','Better / Better Music','Close Collective','Cxmmunity','Cxmmunity Foundation','Blacks in Technology','Operation New Hope'],
+      submarkets: ['House','Hip-Hop','Gospel','Streetwear','Reality Television','Influencer Marketing','Synchronized Music','Esports & Gaming','Second Chances']
     }
-  });
-}
+  };
 
-var STARS = [
-  { id:'ijgb', label:'It Just Gets Better LLC', constellations:['capital','tech','culture'], x:0.50, y:0.47, size:8, brightness:1.0, desc:'The practice that connects everything — seven-plus years of consulting across technology, healthcare, culture, and emerging sectors.' },
-  { id:'embry-riddle', label:'Embry-Riddle', constellations:['tech'], x:0.10, y:0.11, size:5.5, brightness:0.85, desc:'Relationships across the aerospace and aviation industry.' },
-  { id:'neural-earth', label:'Neural Earth', constellations:['tech'], x:0.20, y:0.30, size:5.5, brightness:0.85, desc:'Geospatial intelligence and construction industry relationships — a connection born through a shared Florida State network.' },
-  { id:'microtron', label:'Microtron AI', constellations:['tech','capital'], x:0.28, y:0.17, size:5.5, brightness:0.85, desc:'Relationships with weapons developers, operating systems inventors, and royal family connections in the MENA region.' },
-  { id:'ascension', label:"Ascension St. Vincent's", constellations:['tech'], x:0.08, y:0.43, size:5, brightness:0.75, desc:'Relationships with surgeons and technologists, and participation in White House Task Force briefings.' },
-  { id:'kpmg', label:'Health Equity x AI Task Force', constellations:['tech','capital'], x:0.22, y:0.44, size:4.5, brightness:0.70, desc:'Connections across health equity and AI ethics — the room that led directly to Marineland.' },
-  { id:'marineland', label:'Town of Marineland', constellations:['capital'], x:0.77, y:0.14, size:5, brightness:0.75, desc:'Municipal governance and Florida institutional network.' },
-  { id:'vystar', label:'VyStar Credit Union', constellations:['capital'], x:0.88, y:0.29, size:4.5, brightness:0.68, desc:'Connections with small business owners and blue-collar entrepreneurs through financial literacy and relationship banking.' },
-  { id:'advanz', label:'Advanz LLC', constellations:['capital'], x:0.80, y:0.09, size:4.5, brightness:0.68, desc:'Digital and health equity professionals across Philadelphia and Miami, Blacks in Tech, veteran-owned businesses, and MedTech commercialization.' },
-  { id:'promising', label:'Promising People', constellations:['capital','culture'], x:0.64, y:0.28, size:5, brightness:0.75, desc:'A presidential pardon recipient, an independent horror filmmaker, a South African diamond mine training developer, Jewish advocacy agencies, Republican lawmakers, Verizon, and digital equity initiatives.' },
-  { id:'fsu', label:'Florida State University', constellations:['culture'], x:0.14, y:0.74, size:5.5, brightness:0.85, desc:'Pi Kappa Alpha fraternity, DJs and producers, tour management, and college media and reality TV production.' },
-  { id:'better-music', label:'Better / Better Music', constellations:['culture'], x:0.27, y:0.87, size:5, brightness:0.75, desc:'Influencer marketers, Grammy-nominated producers and engineers, and Atlanta underground music.' },
-  { id:'close-collective', label:'Close Collective', constellations:['culture','capital'], x:0.52, y:0.80, size:5.5, brightness:0.82, desc:'Gospel industry, hip-hop industry, Grammy Academy voters, and Jewish entertainment professionals and executives.' },
-  { id:'cxmmunity', label:'Cxmmunity', constellations:['culture','tech'], x:0.36, y:0.57, size:5, brightness:0.78, desc:'Relationships with Fortune 100 companies, digital equity initiatives, and the Congressional Black Caucus.' },
-  { id:'cxmmunity-found', label:'Cxmmunity Foundation', constellations:['culture'], x:0.44, y:0.70, size:4.5, brightness:0.68, desc:'HBCU and gaming diversity institutional partnerships at the intersection of education and access.' },
-  { id:'bit', label:'Blacks in Technology', constellations:['culture','tech'], x:0.36, y:0.83, size:5, brightness:0.75, desc:'The largest Black tech community globally — a thread running from prison reform through Atlanta and into the present.' },
-  { id:'operation-hope', label:'Operation New Hope', constellations:['culture','capital'], x:0.64, y:0.68, size:4.5, brightness:0.68, desc:'Relationships with Duval County City Council, reentry service providers, credit unions, and second chance agencies.' },
-];
+  var STARS = [
+    { id:'ijgb', label:'It Just Gets Better LLC', constellations:['capital','tech','culture'], x:0.50, y:0.47, size:8, brightness:1.0, desc:'The practice that connects everything - seven-plus years of consulting across technology, healthcare, culture, and emerging sectors.' },
+    { id:'embry-riddle', label:'Embry-Riddle', constellations:['tech'], x:0.10, y:0.11, size:5.5, brightness:0.85, desc:'Relationships across the aerospace and aviation industry.' },
+    { id:'neural-earth', label:'Neural Earth', constellations:['tech'], x:0.20, y:0.30, size:5.5, brightness:0.85, desc:'Geospatial intelligence and construction industry relationships - a connection born through a shared Florida State network.' },
+    { id:'microtron', label:'Microtron AI', constellations:['tech','capital'], x:0.28, y:0.17, size:5.5, brightness:0.85, desc:'Relationships with military technology developers, operating systems inventors, and royal family connections in the MENA region.' },
+    { id:'ascension', label:"Ascension St. Vincents", constellations:['tech'], x:0.08, y:0.43, size:5, brightness:0.75, desc:'Relationships with surgeons and technologists, and participation in White House Task Force briefings.' },
+    { id:'kpmg', label:'Health Equity x AI Task Force', constellations:['tech','capital'], x:0.22, y:0.44, size:4.5, brightness:0.70, desc:'Connections across health equity and AI ethics - the room that led directly to Marineland.' },
+    { id:'marineland', label:'Town of Marineland', constellations:['capital'], x:0.77, y:0.14, size:5, brightness:0.75, desc:'Municipal governance and Florida institutional network.' },
+    { id:'vystar', label:'VyStar Credit Union', constellations:['capital'], x:0.88, y:0.29, size:4.5, brightness:0.68, desc:'Connections with small business owners and blue-collar entrepreneurs through financial literacy and relationship banking.' },
+    { id:'advanz', label:'Advanz LLC', constellations:['capital'], x:0.80, y:0.09, size:4.5, brightness:0.68, desc:'Digital and health equity professionals across Philadelphia and Miami, Blacks in Tech, veteran-owned businesses, and MedTech commercialization.' },
+    { id:'promising', label:'Promising People', constellations:['capital','culture'], x:0.64, y:0.28, size:5, brightness:0.75, desc:'A presidential pardon recipient, an independent horror filmmaker, a South African diamond mine training developer, Jewish advocacy agencies, Republican lawmakers, Verizon, and digital equity initiatives.' },
+    { id:'fsu', label:'Florida State University', constellations:['culture'], x:0.14, y:0.74, size:5.5, brightness:0.85, desc:'Pi Kappa Alpha fraternity, DJs and producers, tour management, and college media and reality TV production.' },
+    { id:'better-music', label:'Better / Better Music', constellations:['culture'], x:0.27, y:0.87, size:5, brightness:0.75, desc:'Influencer marketers, Grammy-nominated producers and engineers, and Atlanta underground music.' },
+    { id:'close-collective', label:'Close Collective', constellations:['culture','capital'], x:0.52, y:0.80, size:5.5, brightness:0.82, desc:'Gospel industry, hip-hop industry, Grammy Academy voters, and Jewish entertainment professionals and executives.' },
+    { id:'cxmmunity', label:'Cxmmunity', constellations:['culture','tech'], x:0.36, y:0.57, size:5, brightness:0.78, desc:'Relationships with Fortune 100 companies, digital equity initiatives, and the Congressional Black Caucus.' },
+    { id:'cxmmunity-found', label:'Cxmmunity Foundation', constellations:['culture'], x:0.44, y:0.70, size:4.5, brightness:0.68, desc:'HBCU and gaming diversity institutional partnerships at the intersection of education and access.' },
+    { id:'bit', label:'Blacks in Technology', constellations:['culture','tech'], x:0.36, y:0.83, size:5, brightness:0.75, desc:'The largest Black tech community globally - a thread running from prison reform through Atlanta and into the present.' },
+    { id:'operation-hope', label:'Operation New Hope', constellations:['culture','capital'], x:0.64, y:0.68, size:4.5, brightness:0.68, desc:'Relationships with Duval County City Council, reentry service providers, credit unions, and second chance agencies.' }
+  ];
 
-var CONNECTIONS = [
-  { a:'embry-riddle', b:'neural-earth', type:'tech' },
-  { a:'embry-riddle', b:'microtron', type:'tech' },
-  { a:'neural-earth', b:'microtron', type:'tech' },
-  { a:'ascension', b:'kpmg', type:'tech' },
-  { a:'kpmg', b:'microtron', type:'tech' },
-  { a:'neural-earth', b:'ijgb', type:'tech' },
-  { a:'microtron', b:'ijgb', type:'tech' },
-  { a:'ascension', b:'ijgb', type:'tech' },
-  { a:'cxmmunity', b:'ijgb', type:'tech' },
-  { a:'marineland', b:'vystar', type:'capital' },
-  { a:'marineland', b:'advanz', type:'capital' },
-  { a:'advanz', b:'microtron', type:'capital' },
-  { a:'kpmg', b:'marineland', type:'capital' },
-  { a:'vystar', b:'ijgb', type:'capital' },
-  { a:'promising', b:'ijgb', type:'capital' },
-  { a:'marineland', b:'ijgb', type:'capital' },
-  { a:'advanz', b:'neural-earth', type:'capital' },
-  { a:'promising', b:'marineland', type:'capital' },
-  { a:'fsu', b:'better-music', type:'culture' },
-  { a:'better-music', b:'close-collective', type:'culture' },
-  { a:'close-collective', b:'cxmmunity', type:'culture' },
-  { a:'cxmmunity', b:'cxmmunity-found', type:'culture' },
-  { a:'cxmmunity-found', b:'bit', type:'culture' },
-  { a:'bit', b:'operation-hope', type:'culture' },
-  { a:'close-collective', b:'ijgb', type:'culture' },
-  { a:'fsu', b:'ijgb', type:'culture' },
-  { a:'operation-hope', b:'ijgb', type:'culture' },
-  { a:'promising', b:'operation-hope', type:'culture' },
-  { a:'fsu', b:'neural-earth', type:'culture' },
-];
+  var CONNECTIONS = [
+    { a:'embry-riddle', b:'neural-earth', type:'tech' },
+    { a:'embry-riddle', b:'microtron', type:'tech' },
+    { a:'neural-earth', b:'microtron', type:'tech' },
+    { a:'ascension', b:'kpmg', type:'tech' },
+    { a:'kpmg', b:'microtron', type:'tech' },
+    { a:'neural-earth', b:'ijgb', type:'tech' },
+    { a:'microtron', b:'ijgb', type:'tech' },
+    { a:'ascension', b:'ijgb', type:'tech' },
+    { a:'cxmmunity', b:'ijgb', type:'tech' },
+    { a:'marineland', b:'vystar', type:'capital' },
+    { a:'marineland', b:'advanz', type:'capital' },
+    { a:'advanz', b:'microtron', type:'capital' },
+    { a:'kpmg', b:'marineland', type:'capital' },
+    { a:'vystar', b:'ijgb', type:'capital' },
+    { a:'promising', b:'ijgb', type:'capital' },
+    { a:'marineland', b:'ijgb', type:'capital' },
+    { a:'advanz', b:'neural-earth', type:'capital' },
+    { a:'promising', b:'marineland', type:'capital' },
+    { a:'fsu', b:'better-music', type:'culture' },
+    { a:'better-music', b:'close-collective', type:'culture' },
+    { a:'close-collective', b:'cxmmunity', type:'culture' },
+    { a:'cxmmunity', b:'cxmmunity-found', type:'culture' },
+    { a:'cxmmunity-found', b:'bit', type:'culture' },
+    { a:'bit', b:'operation-hope', type:'culture' },
+    { a:'close-collective', b:'ijgb', type:'culture' },
+    { a:'fsu', b:'ijgb', type:'culture' },
+    { a:'operation-hope', b:'ijgb', type:'culture' },
+    { a:'promising', b:'operation-hope', type:'culture' },
+    { a:'fsu', b:'neural-earth', type:'culture' }
+  ];
 
-function buildConstellation() {
-  var container = document.getElementById('star-map');
-  var W = Math.max(container.offsetWidth, 600);
-  var H = Math.min(Math.max(W * 0.56, 400), 700);
+  var starGlobal, lineGlobal, activeLegend = null, activeFilterBtn = null;
 
-  var svg = document.createElementNS('http://www.w3.org/2000/svg','svg');
-  svg.setAttribute('viewBox','0 0 ' + W + ' ' + H);
-  svg.setAttribute('preserveAspectRatio','xMidYMid meet');
-
-  var defs = document.createElementNS('http://www.w3.org/2000/svg','defs');
-  Object.keys(COLORS).forEach(function(key) {
-    var f = document.createElementNS('http://www.w3.org/2000/svg','filter');
-    f.setAttribute('id','glow-'+key);
-    f.setAttribute('x','-60%'); f.setAttribute('y','-60%');
-    f.setAttribute('width','220%'); f.setAttribute('height','220%');
-    var blur = document.createElementNS('http://www.w3.org/2000/svg','feGaussianBlur');
-    blur.setAttribute('stdDeviation','3.5'); blur.setAttribute('result','cb');
-    var merge = document.createElementNS('http://www.w3.org/2000/svg','feMerge');
-    ['cb','SourceGraphic'].forEach(function(i) {
-      var n = document.createElementNS('http://www.w3.org/2000/svg','feMergeNode');
-      n.setAttribute('in',i); merge.appendChild(n);
+  function highlightConstellation(type) {
+    if (!starGlobal || !lineGlobal) return;
+    starGlobal.querySelectorAll('g[data-id]').forEach(function(el) {
+      var id = el.getAttribute('data-id');
+      var star = STARS.filter(function(s){ return s.id === id; })[0];
+      el.style.opacity = (star && star.constellations.indexOf(type) > -1) ? '1' : '0.10';
     });
-    f.appendChild(blur); f.appendChild(merge); defs.appendChild(f);
-  });
-  svg.appendChild(defs);
-
-  var bg = document.createElementNS('http://www.w3.org/2000/svg','g');
-  function rng(s) { var x = Math.sin(s)*10000; return x - Math.floor(x); }
-  for (var i = 0; i < 240; i++) {
-    var c = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    c.setAttribute('cx', rng(i*3.1)*W); c.setAttribute('cy', rng(i*7.3)*H);
-    c.setAttribute('r', rng(i*13.7)*1.1+0.2);
-    c.setAttribute('fill','white'); c.setAttribute('opacity', rng(i*5.9)*0.16+0.03);
-    if (i%9===0) c.style.animation='twinkle '+(2.5+rng(i)*3)+'s ease-in-out '+(rng(i*2)*3)+'s infinite';
-    bg.appendChild(c);
-  }
-  svg.appendChild(bg);
-
-  var pos = {};
-  STARS.forEach(function(s) { pos[s.id] = { x: s.x*W, y: s.y*H }; });
-
-  var lineG = document.createElementNS('http://www.w3.org/2000/svg','g');
-  CONNECTIONS.forEach(function(conn) {
-    var a = pos[conn.a], b = pos[conn.b];
-    if (!a||!b) return;
-    var line = document.createElementNS('http://www.w3.org/2000/svg','line');
-    line.setAttribute('x1',a.x); line.setAttribute('y1',a.y);
-    line.setAttribute('x2',b.x); line.setAttribute('y2',b.y);
-    line.setAttribute('stroke', COLORS[conn.type]);
-    line.setAttribute('stroke-width','0.65'); line.setAttribute('opacity','0.18');
-    line.setAttribute('data-a',conn.a); line.setAttribute('data-b',conn.b);
-    lineG.appendChild(line);
-  });
-  svg.appendChild(lineG);
-
-  var starG = document.createElementNS('http://www.w3.org/2000/svg','g');
-  STARS.forEach(function(star) {
-    var p = pos[star.id];
-    var x = p.x, y = p.y;
-    var g = document.createElementNS('http://www.w3.org/2000/svg','g');
-    g.setAttribute('data-id', star.id); g.style.cursor = 'pointer';
-    var col = COLORS[star.constellations[0]];
-    star.constellations.slice(1).forEach(function(cn,i) {
-      var ring = document.createElementNS('http://www.w3.org/2000/svg','circle');
-      ring.setAttribute('cx',x); ring.setAttribute('cy',y);
-      ring.setAttribute('r', star.size+5+i*4);
-      ring.setAttribute('fill','none'); ring.setAttribute('stroke', COLORS[cn]);
-      ring.setAttribute('stroke-width','0.7'); ring.setAttribute('opacity','0.28');
-      g.appendChild(ring);
+    lineGlobal.querySelectorAll('line').forEach(function(line) {
+      var isType = line.getAttribute('data-type') === type;
+      line.setAttribute('opacity', isType ? '0.75' : '0.03');
+      line.setAttribute('stroke-width', isType ? '1.2' : '0.4');
     });
-    var halo = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    halo.setAttribute('cx',x); halo.setAttribute('cy',y);
-    halo.setAttribute('r', star.size+3); halo.setAttribute('fill',col); halo.setAttribute('opacity','0.07');
-    g.appendChild(halo);
-    var circle = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r', star.size);
-    circle.setAttribute('fill',col); circle.setAttribute('opacity', String(0.5+star.brightness*0.45));
-    circle.setAttribute('filter','url(#glow-'+star.constellations[0]+')');
-    g.appendChild(circle);
-    var hit = document.createElementNS('http://www.w3.org/2000/svg','circle');
-    hit.setAttribute('cx',x); hit.setAttribute('cy',y);
-    hit.setAttribute('r', Math.max(star.size+12,20)); hit.setAttribute('fill','transparent');
-    g.appendChild(hit);
-    var lbl = document.createElementNS('http://www.w3.org/2000/svg','text');
-    lbl.setAttribute('x',x); lbl.setAttribute('y', y+star.size+15);
-    lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-family','Cormorant Garamond, serif');
-    lbl.setAttribute('font-size', star.id==='ijgb' ? '12' : '10.5');
-    lbl.setAttribute('fill',col); lbl.setAttribute('opacity','0.50');
-    lbl.setAttribute('pointer-events','none'); lbl.setAttribute('class','star-label');
-    lbl.textContent = star.label;
-    g.appendChild(lbl);
-    starG.appendChild(g);
-    g.addEventListener('click', function(e) { e.stopPropagation(); selectStar(star.id); });
-    g.addEventListener('mouseenter', function() { if (!selected) g.querySelector('.star-label').setAttribute('opacity','0.95'); });
-    g.addEventListener('mouseleave', function() { if (!selected) starG.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.50'); }); });
-  });
-  svg.appendChild(starG);
-  container.appendChild(svg);
-
-  var selected = null;
-
-  function selectStar(id) {
-    selected = id;
-    var star = STARS.find(function(s){ return s.id===id; });
-    if (!star) return;
-    document.getElementById('panel-name').textContent = star.label;
-    document.getElementById('panel-desc').textContent = star.desc;
-    var tagsEl = document.getElementById('panel-tags'); tagsEl.innerHTML = '';
-    star.constellations.forEach(function(cn) {
-      var tag = document.createElement('span'); tag.className = 'panel-tag '+cn;
-      tag.textContent = cn.charAt(0).toUpperCase()+cn.slice(1); tagsEl.appendChild(tag);
-    });
-    document.getElementById('star-panel').classList.add('visible');
-    var connected = new Set([id]);
-    CONNECTIONS.forEach(function(cn) { if(cn.a===id) connected.add(cn.b); if(cn.b===id) connected.add(cn.a); });
-    starG.querySelectorAll('g[data-id]').forEach(function(el) { el.style.opacity = connected.has(el.getAttribute('data-id')) ? '1' : '0.28'; });
-    lineG.querySelectorAll('line').forEach(function(line) {
-      var isConn = line.getAttribute('data-a')===id||line.getAttribute('data-b')===id;
-      line.setAttribute('opacity', isConn ? '0.80' : '0.03');
-      line.setAttribute('stroke-width', isConn ? '1.3' : '0.4');
-    });
-    starG.querySelectorAll('.star-label').forEach(function(el) {
-      var pid = el.closest('g[data-id]') ? el.closest('g[data-id]').getAttribute('data-id') : null;
-      el.setAttribute('opacity', connected.has(pid) ? '0.9' : '0.06');
+    starGlobal.querySelectorAll('.star-label').forEach(function(lbl) {
+      var g = lbl.closest('g[data-id]');
+      var pid = g ? g.getAttribute('data-id') : null;
+      var star = STARS.filter(function(s){ return s.id === pid; })[0];
+      lbl.setAttribute('opacity', (star && star.constellations.indexOf(type) > -1) ? '0.9' : '0.03');
     });
   }
 
-  function clearSelection() {
-    selected = null;
-    document.getElementById('star-panel').classList.remove('visible');
-    starG.querySelectorAll('g[data-id]').forEach(function(el){ el.style.opacity='1'; });
-    lineG.querySelectorAll('line').forEach(function(l){ l.setAttribute('opacity','0.18'); l.setAttribute('stroke-width','0.65'); });
-    starG.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.50'); });
+  function clearHighlight() {
+    if (!starGlobal || !lineGlobal) return;
+    starGlobal.querySelectorAll('g[data-id]').forEach(function(el){ el.style.opacity='1'; });
+    lineGlobal.querySelectorAll('line').forEach(function(l){ l.setAttribute('opacity','0.18'); l.setAttribute('stroke-width','0.65'); });
+    starGlobal.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.50'); });
   }
 
-  svg.addEventListener('click', clearSelection);
-  document.getElementById('panel-close').addEventListener('click', function(e){ e.stopPropagation(); clearSelection(); });
-}
+  function setupFilters() {
+    document.querySelectorAll('.filter-btn').forEach(function(btn) {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var panel = document.getElementById('filter-panel');
+        var type = btn.getAttribute('data-constellation');
+        if (activeFilterBtn === btn && panel.classList.contains('visible')) {
+          panel.classList.remove('visible');
+          btn.classList.remove('active');
+          activeFilterBtn = null;
+          return;
+        }
+        if (activeFilterBtn) activeFilterBtn.classList.remove('active');
+        activeFilterBtn = btn;
+        btn.classList.add('active');
+        var d = CDATA[type];
+        var lbl = document.getElementById('fp-label');
+        lbl.textContent = d.label;
+        lbl.className = 'fp-label ' + type;
+        document.getElementById('fp-network-list').innerHTML = d.network.map(function(n){ return '<li>' + n + '</li>'; }).join('');
+        document.getElementById('fp-tags').innerHTML = d.submarkets.map(function(m){ return '<span class="fp-tag">' + m + '</span>'; }).join('');
+        panel.classList.add('visible');
+      });
+    });
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.filter-btn') && !e.target.closest('#filter-panel')) {
+        document.getElementById('filter-panel').classList.remove('visible');
+        if (activeFilterBtn) { activeFilterBtn.classList.remove('active'); activeFilterBtn = null; }
+      }
+    });
+  }
 
-window.addEventListener('load', function() {
-  setupFilterButtons();
-  buildConstellation();
+  function setupLegend() {
+    document.querySelectorAll('.legend-item').forEach(function(item) {
+      item.addEventListener('click', function(e) {
+        e.stopPropagation();
+        var type = item.getAttribute('data-type');
+        var summary = document.getElementById('constellation-summary');
+        if (activeLegend === type && summary.classList.contains('visible')) {
+          summary.classList.remove('visible');
+          item.classList.remove('active');
+          activeLegend = null;
+          clearHighlight();
+          return;
+        }
+        document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); });
+        activeLegend = type;
+        item.classList.add('active');
+        var d = CDATA[type];
+        var t = document.getElementById('cs-title');
+        t.textContent = d.label;
+        t.className = 'cs-title ' + type;
+        document.getElementById('cs-desc').textContent = d.summary;
+        document.getElementById('cs-nodes-list').innerHTML = d.network.map(function(n){ return '<li>' + n + '</li>'; }).join('');
+        summary.classList.add('visible');
+        highlightConstellation(type);
+        document.getElementById('star-panel').classList.remove('visible');
+      });
+    });
+    document.getElementById('cs-close').addEventListener('click', function() {
+      document.getElementById('constellation-summary').classList.remove('visible');
+      document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); });
+      activeLegend = null;
+      clearHighlight();
+    });
+  }
 
-  var obs = new IntersectionObserver(function(entries) {
-    entries.forEach(function(e) { if (e.isIntersecting) { e.target.style.opacity=1; e.target.style.transform='translateY(0)'; } });
-  }, { threshold: 0.08 });
-  ['#philosophy','#contact'].forEach(function(sel) {
-    var el = document.querySelector(sel);
-    if (el) { el.style.opacity=0; el.style.transform='translateY(24px)'; el.style.transition='opacity 0.9s ease, transform 0.9s ease'; obs.observe(el); }
+  function buildMap() {
+    var container = document.getElementById('star-map');
+    var W = Math.max(container.offsetWidth, 600);
+    var H = Math.min(Math.max(W * 0.56, 400), 700);
+    var ns = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(ns,'svg');
+    svg.setAttribute('viewBox','0 0 ' + W + ' ' + H);
+    svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+
+    var defs = document.createElementNS(ns,'defs');
+    Object.keys(COLORS).forEach(function(key) {
+      var f = document.createElementNS(ns,'filter');
+      f.setAttribute('id','glow-'+key); f.setAttribute('x','-60%'); f.setAttribute('y','-60%'); f.setAttribute('width','220%'); f.setAttribute('height','220%');
+      var blur = document.createElementNS(ns,'feGaussianBlur');
+      blur.setAttribute('stdDeviation','3.5'); blur.setAttribute('result','cb');
+      var merge = document.createElementNS(ns,'feMerge');
+      ['cb','SourceGraphic'].forEach(function(i){ var n = document.createElementNS(ns,'feMergeNode'); n.setAttribute('in',i); merge.appendChild(n); });
+      f.appendChild(blur); f.appendChild(merge); defs.appendChild(f);
+    });
+    svg.appendChild(defs);
+
+    var bg = document.createElementNS(ns,'g');
+    function rng(s){ var x=Math.sin(s)*10000; return x-Math.floor(x); }
+    for(var i=0;i<240;i++){
+      var c=document.createElementNS(ns,'circle');
+      c.setAttribute('cx',rng(i*3.1)*W); c.setAttribute('cy',rng(i*7.3)*H);
+      c.setAttribute('r',rng(i*13.7)*1.1+0.2); c.setAttribute('fill','white'); c.setAttribute('opacity',rng(i*5.9)*0.16+0.03);
+      if(i%9===0) c.style.animation='twinkle '+(2.5+rng(i)*3)+'s ease-in-out '+(rng(i*2)*3)+'s infinite';
+      bg.appendChild(c);
+    }
+    svg.appendChild(bg);
+
+    var pos={};
+    STARS.forEach(function(s){ pos[s.id]={x:s.x*W,y:s.y*H}; });
+
+    var lineG=document.createElementNS(ns,'g');
+    CONNECTIONS.forEach(function(conn){
+      var a=pos[conn.a],b=pos[conn.b]; if(!a||!b) return;
+      var line=document.createElementNS(ns,'line');
+      line.setAttribute('x1',a.x); line.setAttribute('y1',a.y); line.setAttribute('x2',b.x); line.setAttribute('y2',b.y);
+      line.setAttribute('stroke',COLORS[conn.type]); line.setAttribute('stroke-width','0.65'); line.setAttribute('opacity','0.18');
+      line.setAttribute('data-a',conn.a); line.setAttribute('data-b',conn.b); line.setAttribute('data-type',conn.type);
+      lineG.appendChild(line);
+    });
+    svg.appendChild(lineG);
+    lineGlobal=lineG;
+
+    var starG=document.createElementNS(ns,'g');
+    var selected=null;
+
+    STARS.forEach(function(star){
+      var p=pos[star.id], x=p.x, y=p.y;
+      var g=document.createElementNS(ns,'g'); g.setAttribute('data-id',star.id); g.style.cursor='pointer';
+      var col=COLORS[star.constellations[0]];
+      star.constellations.slice(1).forEach(function(cn,i){
+        var ring=document.createElementNS(ns,'circle');
+        ring.setAttribute('cx',x); ring.setAttribute('cy',y); ring.setAttribute('r',star.size+5+i*4);
+        ring.setAttribute('fill','none'); ring.setAttribute('stroke',COLORS[cn]); ring.setAttribute('stroke-width','0.7'); ring.setAttribute('opacity','0.28');
+        g.appendChild(ring);
+      });
+      var halo=document.createElementNS(ns,'circle'); halo.setAttribute('cx',x); halo.setAttribute('cy',y); halo.setAttribute('r',star.size+3); halo.setAttribute('fill',col); halo.setAttribute('opacity','0.07'); g.appendChild(halo);
+      var circle=document.createElementNS(ns,'circle'); circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r',star.size); circle.setAttribute('fill',col); circle.setAttribute('opacity',String(0.5+star.brightness*0.45)); circle.setAttribute('filter','url(#glow-'+star.constellations[0]+')'); g.appendChild(circle);
+      var hit=document.createElementNS(ns,'circle'); hit.setAttribute('cx',x); hit.setAttribute('cy',y); hit.setAttribute('r',Math.max(star.size+12,20)); hit.setAttribute('fill','transparent'); g.appendChild(hit);
+      var lbl=document.createElementNS(ns,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',y+star.size+15); lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-family','Cormorant Garamond, serif'); lbl.setAttribute('font-size',star.id==='ijgb'?'12':'10.5'); lbl.setAttribute('fill',col); lbl.setAttribute('opacity','0.50'); lbl.setAttribute('pointer-events','none'); lbl.setAttribute('class','star-label'); lbl.textContent=star.label; g.appendChild(lbl);
+      starG.appendChild(g);
+
+      g.addEventListener('click',function(e){
+        e.stopPropagation();
+        document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); });
+        document.getElementById('constellation-summary').classList.remove('visible');
+        activeLegend=null;
+        selected=star.id;
+        document.getElementById('panel-name').textContent=star.label;
+        document.getElementById('panel-desc').textContent=star.desc;
+        var tagsEl=document.getElementById('panel-tags'); tagsEl.innerHTML='';
+        star.constellations.forEach(function(cn){ var tag=document.createElement('span'); tag.className='panel-tag '+cn; tag.textContent=cn.charAt(0).toUpperCase()+cn.slice(1); tagsEl.appendChild(tag); });
+        document.getElementById('star-panel').classList.add('visible');
+        var connected={}; connected[star.id]=true;
+        CONNECTIONS.forEach(function(cn){ if(cn.a===star.id) connected[cn.b]=true; if(cn.b===star.id) connected[cn.a]=true; });
+        starG.querySelectorAll('g[data-id]').forEach(function(el){ el.style.opacity=connected[el.getAttribute('data-id')]?'1':'0.28'; });
+        lineG.querySelectorAll('line').forEach(function(line){ var isConn=line.getAttribute('data-a')===star.id||line.getAttribute('data-b')===star.id; line.setAttribute('opacity',isConn?'0.80':'0.03'); line.setAttribute('stroke-width',isConn?'1.3':'0.4'); });
+        starG.querySelectorAll('.star-label').forEach(function(el){ var g2=el.closest('g[data-id]'); var pid=g2?g2.getAttribute('data-id'):null; el.setAttribute('opacity',connected[pid]?'0.9':'0.06'); });
+      });
+      g.addEventListener('mouseenter',function(){ if(!selected) g.querySelector('.star-label').setAttribute('opacity','0.95'); });
+      g.addEventListener('mouseleave',function(){ if(!selected) starG.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.50'); }); });
+    });
+    svg.appendChild(starG);
+    starGlobal=starG;
+    container.appendChild(svg);
+
+    function clearStar(){
+      selected=null;
+      document.getElementById('star-panel').classList.remove('visible');
+      if(activeLegend){ highlightConstellation(activeLegend); }
+      else { clearHighlight(); }
+    }
+    svg.addEventListener('click',clearStar);
+    document.getElementById('panel-close').addEventListener('click',function(e){ e.stopPropagation(); clearStar(); });
+  }
+
+  window.addEventListener('load',function(){
+    setupFilters();
+    setupLegend();
+    buildMap();
+    var obs=new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='translateY(0)'; } }); },{threshold:0.08});
+    ['#philosophy','#contact'].forEach(function(sel){ var el=document.querySelector(sel); if(el){ el.style.opacity=0; el.style.transform='translateY(24px)'; el.style.transition='opacity 0.9s ease, transform 0.9s ease'; obs.observe(el); } });
   });
-});
+})();
 </script>
 </body>
 </html>
