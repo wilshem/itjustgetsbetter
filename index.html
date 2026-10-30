@@ -101,7 +101,6 @@
     :focus-visible { outline: 2px solid var(--metal-1); outline-offset: 3px; }
     .legend-item, .panel-close, .cs-close { background: none; font-family: "Syne", sans-serif; }
     .panel-close, .cs-close { border: none; }
-    .hint-mobile { display: none; }
     #star-map g[data-id]:focus { outline: none; }
     #star-map .star-focus { opacity: 0; }
     #star-map g[data-id]:focus-visible .star-body { opacity: 1 !important; }
@@ -217,9 +216,6 @@
     }
     @media (max-width: 640px) {
       .svc-grid { grid-template-columns: 1fr; }
-      #star-map { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-      #star-map svg { width: 600px; }
-      .hint-mobile { display: inline; }
     }
     @media (prefers-reduced-motion: reduce) {
       html { scroll-behavior: auto; }
@@ -393,7 +389,7 @@
     </div>
     <div class="constellation-hint">
       Select a star to explore<br/>
-      Choose a constellation to highlight it<span class="hint-mobile"><br/>Swipe sideways to see the whole map</span>
+      Choose a constellation to highlight it
     </div>
   </div>
   <div class="origins-body">
@@ -625,9 +621,12 @@
 
   function buildMap() {
     var container = document.getElementById('star-map');
-    var W = Math.max(container.offsetWidth, 600);
+    // Phones get a portrait map (the layout turned on its side) so the whole
+    // constellation fits the screen without sideways scrolling.
+    var portrait = window.matchMedia('(max-width: 640px)').matches;
     var sideLayout = window.matchMedia('(min-width: 1201px)').matches;
-    var H = Math.min(Math.max(W * (sideLayout ? 0.7 : 0.56), 400), 700);
+    var W = portrait ? container.offsetWidth : Math.max(container.offsetWidth, 600);
+    var H = portrait ? Math.round(W * 1.55) : Math.min(Math.max(W * (sideLayout ? 0.7 : 0.56), 400), 700);
     var ns = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(ns,'svg');
     svg.setAttribute('viewBox','0 0 ' + W + ' ' + H);
@@ -658,7 +657,7 @@
     svg.appendChild(bg);
 
     var pos={};
-    STARS.forEach(function(s){ pos[s.id]={x:s.x*W,y:s.y*H}; });
+    STARS.forEach(function(s){ pos[s.id]= portrait ? {x:(0.06+s.y*0.88)*W, y:(0.03+s.x*0.94)*H} : {x:s.x*W,y:s.y*H}; });
 
     var lineG=document.createElementNS(ns,'g'); lineG.setAttribute('aria-hidden','true');
     CONNECTIONS.forEach(function(conn){
@@ -691,7 +690,7 @@
       var circle=document.createElementNS(ns,'circle'); circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r',star.size); circle.setAttribute('fill',col); circle.setAttribute('opacity',String(0.5+star.brightness*0.45)); circle.setAttribute('filter','url(#glow-'+star.constellations[0]+')'); body.appendChild(circle);
       var ringF=document.createElementNS(ns,'circle'); ringF.setAttribute('cx',x); ringF.setAttribute('cy',y); ringF.setAttribute('r',star.size+9); ringF.setAttribute('fill','none'); ringF.setAttribute('stroke','#e8e8e8'); ringF.setAttribute('stroke-width','1.5'); ringF.setAttribute('class','star-focus'); g.appendChild(ringF);
       var hit=document.createElementNS(ns,'circle'); hit.setAttribute('cx',x); hit.setAttribute('cy',y); hit.setAttribute('r',Math.max(star.size+12,20)); hit.setAttribute('fill','transparent'); g.appendChild(hit);
-      var lbl=document.createElementNS(ns,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',y+star.size+17); lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-family','Cormorant Garamond, serif'); lbl.setAttribute('font-size',star.id==='ijgb'?'14':'12.5'); lbl.setAttribute('fill',col); lbl.setAttribute('data-color',col); lbl.setAttribute('opacity','0.80'); lbl.setAttribute('pointer-events','none'); lbl.setAttribute('class','star-label'); lbl.textContent=star.label; g.appendChild(lbl);
+      var lbl=document.createElementNS(ns,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',y+star.size+17); lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-family','Cormorant Garamond, serif'); lbl.setAttribute('font-size',portrait?(star.id==='ijgb'?'12.5':'11'):(star.id==='ijgb'?'14':'12.5')); lbl.setAttribute('fill',col); lbl.setAttribute('data-color',col); lbl.setAttribute('opacity','0.80'); lbl.setAttribute('pointer-events','none'); lbl.setAttribute('class','star-label'); lbl.textContent=star.label; g.appendChild(lbl);
       starG.appendChild(g);
 
       g.addEventListener('click',function(e){
