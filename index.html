@@ -47,11 +47,23 @@
     /* Map with legend and summary beside it, so a highlighted constellation stays in view. */
     .origins-body { display: grid; grid-template-columns: minmax(0, 1fr) 380px; grid-template-areas: "map legend" "map summary"; grid-template-rows: auto 1fr; column-gap: 40px; align-items: start; padding: 0 60px 72px 0; }
     #star-map-wrapper { grid-area: map; }
-    .origins-body .constellation-legend { grid-area: legend; padding: 8px 0 24px; flex-direction: column; align-items: flex-start; gap: 6px; }
-    .origins-body .legend-label { margin-bottom: 6px; }
+    .origins-body .constellation-legend { grid-area: legend; padding: 0 0 16px; flex-wrap: wrap; align-items: center; gap: 8px 4px; }
+    .origins-body .legend-label { flex-basis: 100%; margin-bottom: 4px; }
     .origins-body #constellation-summary { grid-area: summary; margin: 0; }
-    .origins-body #constellation-summary.visible { padding: 24px 24px 28px; margin-bottom: 0; }
-    .origins-body .cs-body { grid-template-columns: 1fr; gap: 24px; }
+    .origins-body #star-panel { grid-area: summary; position: relative; transform: none; background: none; border: 1px solid var(--metal-4); padding: 20px 24px 24px; grid-template-columns: 1fr; }
+    .origins-body .panel-close { position: absolute; top: 14px; right: 12px; }
+    .origins-body .panel-constellations { padding-right: 96px; }
+    .origins-body #star-panel:not(.visible) { display: none; }
+    .origins-body .panel-name { font-size: 26px; }
+    .origins-body .panel-desc { font-size: 17px; line-height: 1.6; }
+    .origins-body #constellation-summary.visible { padding: 20px 24px 24px; margin-bottom: 0; }
+    .origins-body .cs-body { grid-template-columns: 1fr; gap: 20px; }
+    .origins-body .cs-header { margin-bottom: 12px; }
+    .origins-body .cs-desc { font-size: 16px; line-height: 1.6; }
+    .origins-body .cs-nodes-list { gap: 0; }
+    .origins-body .cs-nodes-list li { border: none; padding: 0; font-family: "Cormorant Garamond", serif; font-size: 16px; letter-spacing: 0; text-transform: none; color: var(--metal-2); line-height: 1.6; }
+    .origins-body .cs-nodes-list li:not(:last-child)::after { content: "\00b7"; color: var(--metal-text); padding: 0 8px; }
+    .origins-body .cs-sub-label { margin-top: 16px; }
     .legend-label { font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--metal-text); }
     .legend-item { display: flex; align-items: center; gap: 10px; font-size: 13px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; padding: 6px 12px; border: 1px solid transparent; transition: all 0.25s ease; }
     .legend-item:hover { border-color: currentColor; background: rgba(255,255,255,0.03); }
@@ -144,13 +156,13 @@
     @media (max-width: 1200px) {
       .origins-body { grid-template-columns: minmax(0, 1fr); grid-template-areas: "legend" "map" "summary"; grid-template-rows: auto; padding: 0 0 72px; }
       .origins-body .constellation-legend { padding: 0 60px 24px; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 24px; }
-      .origins-body .legend-label { margin-bottom: 0; }
-      .origins-body #constellation-summary { margin: 24px 60px 0; }
+      .origins-body .legend-label { flex-basis: auto; margin-bottom: 0; }
+      .origins-body #constellation-summary, .origins-body #star-panel { margin: 24px 60px 0; }
       .origins-body #constellation-summary.visible { padding: 28px 32px 32px; }
     }
     @media (max-width: 768px) {
       .origins-body .constellation-legend { padding: 0 24px 20px; }
-      .origins-body #constellation-summary { margin: 20px 24px 0; }
+      .origins-body #constellation-summary, .origins-body #star-panel { margin: 20px 24px 0; }
     }
     @media (max-width: 1024px) {
       .svc-grid { grid-template-columns: repeat(2, 1fr); }
@@ -331,14 +343,6 @@
   <div class="origins-body">
   <div id="star-map-wrapper" style="position:relative;">
     <div id="star-map"></div>
-    <div id="star-panel">
-      <div aria-live="polite">
-        <div class="panel-constellations" id="panel-tags"></div>
-        <div class="panel-name" id="panel-name"></div>
-        <div class="panel-desc" id="panel-desc"></div>
-      </div>
-      <button type="button" class="panel-close" id="panel-close" aria-label="Close star details">&#x2715; close</button>
-    </div>
   </div>
   <div class="constellation-legend">
     <span class="legend-label">Constellations</span>
@@ -367,6 +371,14 @@
       </div>
     </div>
   </div>
+  <div id="star-panel">
+    <div aria-live="polite">
+      <div class="panel-constellations" id="panel-tags"></div>
+      <div class="panel-name" id="panel-name"></div>
+      <div class="panel-desc" id="panel-desc"></div>
+    </div>
+    <button type="button" class="panel-close" id="panel-close" aria-label="Close star details">&#x2715; close</button>
+  </div>
   </div>
 </section>
 
@@ -393,19 +405,19 @@
       label: 'Technology',
       summary: 'The systems that govern the future are being built right now in labs, classified rooms, and codebases that nobody has seen yet. This constellation lives inside the work.',
       network: ['Embry-Riddle Aeronautical University','Neural Earth','Microtron AI','Ascension St. Vincents','Health Equity x AI Task Force','Cxmmunity','Blacks in Technology'],
-      submarkets: ['Aerospace & Aviation','Geospatial Intelligence','Operating Systems','Military Tech Development','Medical AI & Robotics','Immersive Gaming Labs','Technology Skills Training']
+      submarkets: ['Aerospace & Aviation','Geospatial Intelligence','Operating Systems','Military Tech Development','Medical AI & Robotics']
     },
     capital: {
       label: 'Capital',
       summary: 'Money follows attention. Attention follows trust. This constellation was built in the rooms where both were already in motion and where the next deal is already being structured before anyone announces it.',
       network: ['It Just Gets Better LLC','Town of Marineland','VyStar Credit Union','Advanz LLC','Promising People','Health Equity x AI Task Force','Microtron AI'],
-      submarkets: ['Creative Financing','Venture Advisory','Municipal Finance','Credit Products','P2P Partnerships','Private Placements','Research & Development','Seed-to-Series A Startups']
+      submarkets: ['Venture Advisory','Seed-to-Series A Startups','Private Placements','Municipal Finance','Creative Financing']
     },
     culture: {
       label: 'Culture',
       summary: 'Culture is not content. It is the operating system underneath everything else. This constellation runs through every format that has ever moved a room and the people who know how to do it again.',
       network: ['Florida State University','Better / Better Music','Close Collective','Cxmmunity','Cxmmunity Foundation','Blacks in Technology','Operation New Hope'],
-      submarkets: ['House','Hip-Hop','Gospel','Streetwear','Reality Television','Influencer Marketing','Synchronized Music','Esports & Gaming','Second Chances']
+      submarkets: ['Hip-Hop','Gospel','Influencer Marketing','Esports & Gaming','Second Chances']
     }
   };
 
@@ -458,7 +470,13 @@
     { a:'fsu', b:'ijgb', type:'culture' },
     { a:'operation-hope', b:'ijgb', type:'culture' },
     { a:'promising', b:'operation-hope', type:'culture' },
-    { a:'fsu', b:'neural-earth', type:'culture' }
+    { a:'fsu', b:'neural-earth', type:'culture' },
+    { a:'embry-riddle', b:'ijgb', type:'tech' },
+    { a:'kpmg', b:'ijgb', type:'tech' },
+    { a:'advanz', b:'ijgb', type:'capital' },
+    { a:'cxmmunity-found', b:'ijgb', type:'culture' },
+    { a:'bit', b:'ijgb', type:'culture' },
+    { a:'better-music', b:'ijgb', type:'culture' }
   ];
 
   var starGlobal, lineGlobal, activeLegend = null;
@@ -534,7 +552,8 @@
   function buildMap() {
     var container = document.getElementById('star-map');
     var W = Math.max(container.offsetWidth, 600);
-    var H = Math.min(Math.max(W * 0.56, 400), 700);
+    var sideLayout = window.matchMedia('(min-width: 1201px)').matches;
+    var H = Math.min(Math.max(W * (sideLayout ? 0.7 : 0.56), 400), 700);
     var ns = 'http://www.w3.org/2000/svg';
     var svg = document.createElementNS(ns,'svg');
     svg.setAttribute('viewBox','0 0 ' + W + ' ' + H);
@@ -685,7 +704,7 @@
       clearStar();
       if(back) back.focus();
     });
-    document.getElementById('star-map-wrapper').addEventListener('keydown',function(e){
+    document.querySelector('.origins-body').addEventListener('keydown',function(e){
       if(e.key==='Escape'&&selected){ var back=starG.querySelector('g[data-id="'+selected+'"]'); clearStar(); if(back) back.focus(); }
     });
     if(container.scrollWidth>container.clientWidth) container.scrollLeft=(container.scrollWidth-container.clientWidth)/2;
