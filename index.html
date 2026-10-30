@@ -31,7 +31,7 @@
     .section-divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--metal-4), transparent); }
     #constellation { padding: 80px 0 0; }
     .constellation-header { padding: 0 60px 52px; display: flex; justify-content: space-between; align-items: flex-end; }
-    .constellation-intro { font-family: "Cormorant Garamond", serif; font-size: 21px; color: var(--metal-2); margin-top: 12px; max-width: 560px; line-height: 1.5; }
+    .constellation-intro { font-family: "Cormorant Garamond", serif; font-size: 21px; color: var(--metal-2); margin-top: 12px; max-width: 640px; line-height: 1.5; }
     .constellation-title { font-family: "Cormorant Garamond", serif; font-size: 48px; font-weight: 300; font-style: italic; color: var(--metal-2); }
     .constellation-hint { font-size: 14px; letter-spacing: 0.15em; color: var(--metal-text); text-align: right; line-height: 1.9; }
     #star-map { width: 100%; position: relative; overflow: hidden; min-height: 400px; }
@@ -295,7 +295,7 @@
   <div class="constellation-header">
     <div>
       <h2 class="constellation-title">Origins</h2>
-      <p class="constellation-intro">The rooms, relationships, and experiences that built It Just Gets Better.</p>
+      <p class="constellation-intro">The rooms and relationships that built the firm.</p>
     </div>
     <div class="constellation-hint">
       Select a star to explore<br/>
@@ -346,7 +346,7 @@
 <div class="section-divider"></div>
 
 <footer id="contact">
-  <a href="https://www.linkedin.com/in/wilshem/" target="_blank" rel="noopener" class="footer-btn">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
+  <a href="https://www.linkedin.com/company/itjustgetsbetter/" target="_blank" rel="noopener" class="footer-btn">LinkedIn<span class="sr-only"> (opens in a new tab)</span></a>
   <div class="footer-copy">&#x00A9; 2026 &#x00B7; It Just Gets Better LLC</div>
 </footer>
 </main>
@@ -603,6 +603,51 @@
     svg.appendChild(starG);
     starGlobal=starG;
     container.appendChild(svg);
+    placeLabels();
+
+    // Keep star names inside the map and clear of other names and orbs.
+    // Each name tries below, above, right, then left of its orb, then
+    // slightly shifted spots, and takes the first that is free; bigger stars
+    // are placed first.
+    function placeLabels(){
+      function hit(a,b){ return a.x<b.x+b.w && b.x<a.x+a.w && a.y<b.y+b.h && b.y<a.y+a.h; }
+      var orbs=STARS.map(function(s){ var r=s.size+4; return { id:s.id, x:pos[s.id].x-r, y:pos[s.id].y-r, w:2*r, h:2*r }; });
+      var placed=[];
+      STARS.slice().sort(function(a,b){ return b.size-a.size; }).forEach(function(s){
+        var p=pos[s.id], l=starG.querySelector('g[data-id="'+s.id+'"] .star-label');
+        var ring=s.size+(s.constellations.length>1 ? 5+(s.constellations.length-2)*4 : 3);
+        var below=p.y+s.size+17, above=p.y-ring-6;
+        var spots=[
+          ['middle',p.x,below,true],
+          ['middle',p.x,above,true],
+          ['start',p.x+ring+6,p.y+4,false],
+          ['end',p.x-ring-6,p.y+4,false]
+        ];
+        [40,70].forEach(function(dx){
+          spots.push(['middle',p.x+dx,below,true],['middle',p.x-dx,below,true],['middle',p.x+dx,above,true],['middle',p.x-dx,above,true]);
+        });
+        var chosen=null;
+        for(var k=0;k<spots.length&&!chosen;k++){
+          var sp=spots[k];
+          l.setAttribute('text-anchor',sp[0]); l.setAttribute('x',sp[1]); l.setAttribute('y',sp[2]);
+          var b=l.getBBox();
+          if(sp[3]){
+            var shift=b.x<6 ? 6-b.x : (b.x+b.width>W-6 ? (W-6)-(b.x+b.width) : 0);
+            if(shift){ l.setAttribute('x',sp[1]+shift); b=l.getBBox(); }
+          } else if(b.x<6||b.x+b.width>W-6) continue;
+          var box={ x:b.x-4, y:b.y, w:b.width+8, h:b.height };
+          var free=!placed.some(function(o){ return hit(box,o); }) && !orbs.some(function(o){ return o.id!==s.id && hit(box,o); });
+          if(free) chosen={ sp:sp, x:+l.getAttribute('x'), box:box };
+        }
+        if(!chosen){
+          var d=spots[0]; l.setAttribute('text-anchor',d[0]); l.setAttribute('x',d[1]); l.setAttribute('y',d[2]);
+          var b2=l.getBBox(); chosen={ box:{ x:b2.x-4, y:b2.y, w:b2.width+8, h:b2.height } };
+        } else {
+          l.setAttribute('text-anchor',chosen.sp[0]); l.setAttribute('x',chosen.x); l.setAttribute('y',chosen.sp[2]);
+        }
+        placed.push(chosen.box);
+      });
+    }
 
     function clearStar(){
       selected=null;
