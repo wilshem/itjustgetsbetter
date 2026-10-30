@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>It Just Gets Better</title>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Syne:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  <title>It Just Gets Better LLC | Technology and Strategy Advisory</title>
+  <meta name="description" content="It Just Gets Better LLC provides technology and strategy advisory services: research, analysis, partnerships, system design and implementation, and technology commercialization." />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Syne:wght@400;800&display=swap" rel="stylesheet" />
   <style>
     :root {
       --bg: #06060a; --metal-1: #e8e8e8; --metal-2: #b8b8b8; --metal-3: #787878;
-      --metal-4: #2e2e2e; --metal-shine: #f4f4f4;
+      --metal-4: #2e2e2e; --metal-shine: #f4f4f4; --metal-text: #8a8a8a;
       --tech: #7aafc4; --capital: #c4a45a; --culture: #9f8fc4;
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -42,52 +43,51 @@
     .fp-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; margin-bottom: 20px; }
     .fp-label.tech { color: var(--tech); } .fp-label.capital { color: var(--capital); } .fp-label.culture { color: var(--culture); }
     .fp-networks { margin-bottom: 24px; }
-    .fp-section-title { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); margin-bottom: 10px; }
+    .fp-section-title { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-text); margin-bottom: 10px; }
     .fp-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
     .fp-list li { font-family: "Cormorant Garamond", serif; font-size: 16px; color: var(--metal-2); line-height: 1.3; }
     .fp-tags { display: flex; flex-wrap: wrap; gap: 8px; }
     .fp-tag { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--metal-4); color: var(--metal-3); }
-    .scroll-hint { position: absolute; bottom: 40px; left: 60px; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--metal-4); display: flex; align-items: center; gap: 12px; animation: fadeUp 1.2s ease 0.6s both; }
+    .scroll-hint { position: absolute; bottom: 40px; left: 60px; font-size: 10px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--metal-text); display: flex; align-items: center; gap: 12px; animation: fadeUp 1.2s ease 0.6s both; }
     .scroll-hint::after { content: ""; width: 1px; height: 40px; background: linear-gradient(180deg, var(--metal-4), transparent); }
     .section-divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--metal-4), transparent); }
     #constellation { padding: 80px 0 0; }
     .constellation-header { padding: 0 60px 52px; display: flex; justify-content: space-between; align-items: flex-end; }
     .constellation-title { font-family: "Cormorant Garamond", serif; font-size: 48px; font-weight: 300; font-style: italic; color: var(--metal-2); }
-    .constellation-hint { font-size: 11px; letter-spacing: 0.15em; color: var(--metal-4); text-align: right; line-height: 1.9; }
+    .constellation-hint { font-size: 11px; letter-spacing: 0.15em; color: var(--metal-text); text-align: right; line-height: 1.9; }
     #star-map { width: 100%; position: relative; overflow: hidden; min-height: 400px; }
     #star-map svg { width: 100%; display: block; }
-    #star-panel { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 60px 32px; background: linear-gradient(0deg, rgba(6,6,10,0.97) 65%, transparent 100%); display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; opacity: 0; transform: translateY(10px); transition: opacity 0.4s ease, transform 0.4s ease; pointer-events: none; }
-    #star-panel.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
+    #star-panel { position: absolute; bottom: 0; left: 0; right: 0; padding: 28px 60px 32px; background: linear-gradient(0deg, rgba(6,6,10,0.97) 65%, transparent 100%); display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: end; opacity: 0; transform: translateY(10px); transition: opacity 0.4s ease, transform 0.4s ease, visibility 0.4s; pointer-events: none; visibility: hidden; }
+    #star-panel.visible { opacity: 1; transform: translateY(0); pointer-events: all; visibility: visible; }
     .panel-constellations { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
-    .panel-tag { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; padding: 3px 10px; border: 1px solid currentColor; opacity: 0.75; }
+    .panel-tag { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; padding: 3px 10px; border: 1px solid currentColor; opacity: 0.9; }
     .panel-tag.tech { color: var(--tech); } .panel-tag.capital { color: var(--capital); } .panel-tag.culture { color: var(--culture); }
     .panel-name { font-family: "Cormorant Garamond", serif; font-size: 30px; font-weight: 400; color: var(--metal-1); margin-bottom: 10px; line-height: 1.1; }
     .panel-desc { font-family: "Cormorant Garamond", serif; font-size: 16px; color: var(--metal-3); line-height: 1.75; max-width: 720px; }
-    .panel-close { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); cursor: pointer; padding: 8px; transition: color 0.2s; align-self: flex-start; }
+    .panel-close { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-text); cursor: pointer; padding: 8px; transition: color 0.2s; align-self: flex-start; }
     .panel-close:hover { color: var(--metal-2); }
     .constellation-legend { padding: 28px 60px 72px; display: flex; gap: 36px; align-items: center; }
-    .legend-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--metal-4); }
+    .legend-label { font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--metal-text); }
     .legend-item { display: flex; align-items: center; gap: 10px; font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer; padding: 6px 12px; border: 1px solid transparent; transition: all 0.25s ease; }
     .legend-item:hover { border-color: currentColor; background: rgba(255,255,255,0.03); }
     .legend-item.active { border-color: currentColor; background: rgba(255,255,255,0.05); }
     .legend-dot { width: 7px; height: 7px; border-radius: 50%; }
-    #constellation-summary { margin: 0 60px 0; border: 1px solid var(--metal-4); padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.45s ease, padding 0.3s ease, margin-bottom 0.3s ease; }
-    #constellation-summary.visible { max-height: 400px; padding: 32px 40px 36px; margin-bottom: 32px; }
+    #constellation-summary { margin: 0 60px 0; border: 1px solid var(--metal-4); padding: 0; max-height: 0; overflow: hidden; transition: max-height 0.45s ease, padding 0.3s ease, margin-bottom 0.3s ease, visibility 0.45s; visibility: hidden; }
+    #constellation-summary.visible { max-height: 400px; padding: 32px 40px 36px; margin-bottom: 32px; visibility: visible; }
     .cs-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; }
     .cs-title { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; }
     .cs-title.tech { color: var(--tech); } .cs-title.capital { color: var(--capital); } .cs-title.culture { color: var(--culture); }
-    .cs-close { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); cursor: pointer; transition: color 0.2s; }
+    .cs-close { font-size: 10px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-text); cursor: pointer; transition: color 0.2s; }
     .cs-close:hover { color: var(--metal-2); }
     .cs-body { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
     .cs-desc { font-family: "Cormorant Garamond", serif; font-size: 17px; color: var(--metal-3); line-height: 1.75; }
-    .cs-nodes-label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); margin-bottom: 10px; }
+    .cs-nodes-label { font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-text); margin-bottom: 10px; }
     .cs-nodes-list { list-style: none; display: flex; flex-wrap: wrap; gap: 8px; }
     .cs-nodes-list li { font-size: 9px; letter-spacing: 0.15em; text-transform: uppercase; padding: 4px 10px; border: 1px solid var(--metal-4); color: var(--metal-3); }
-    #philosophy { padding: 140px 60px; max-width: 1040px; }
-    .philosophy-label { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--metal-4); margin-bottom: 48px; }
+    .philosophy-label { font-size: 10px; letter-spacing: 0.35em; text-transform: uppercase; color: var(--metal-text); margin-bottom: 48px; }
     .philosophy-quote { font-family: "Cormorant Garamond", serif; font-size: clamp(28px, 3.5vw, 54px); font-weight: 300; line-height: 1.3; color: var(--metal-2); }
     .philosophy-quote em { font-style: italic; background: linear-gradient(135deg, var(--metal-shine), var(--metal-2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .philosophy-attr { margin-top: 40px; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-4); }
+    .philosophy-attr { margin-top: 40px; font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-text); }
     #contact { padding: 120px 60px 80px; }
     .contact-header { font-family: "Cormorant Garamond", serif; font-size: clamp(44px, 6vw, 92px); font-weight: 300; line-height: 1.05; margin-bottom: 60px; max-width: 700px; }
     .contact-header em { font-style: italic; color: var(--metal-3); }
@@ -95,8 +95,64 @@
     .contact-link { font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase; color: var(--metal-3); text-decoration: none; border-bottom: 1px solid var(--metal-4); padding-bottom: 8px; transition: color 0.3s, border-color 0.3s; }
     .contact-link:hover { color: var(--metal-1); border-color: var(--metal-2); }
     footer { border-top: 1px solid var(--metal-4); padding-top: 32px; display: flex; justify-content: space-between; align-items: center; }
-    .footer-mark { font-family: "Cormorant Garamond", serif; font-size: 13px; font-style: italic; color: var(--metal-4); }
-    .footer-copy { font-size: 10px; letter-spacing: 0.2em; color: var(--metal-4); }
+    .footer-mark { font-family: "Cormorant Garamond", serif; font-size: 13px; font-style: italic; color: var(--metal-text); }
+    .footer-copy { font-size: 10px; letter-spacing: 0.2em; color: var(--metal-text); }
+    [hidden] { display: none !important; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    :focus-visible { outline: 2px solid var(--metal-1); outline-offset: 3px; }
+    .legend-item, .panel-close, .cs-close { background: none; font-family: "Syne", sans-serif; }
+    .panel-close, .cs-close { border: none; }
+    .hint-mobile { display: none; }
+    #star-map g[data-id]:focus { outline: none; }
+    #star-map .star-focus { opacity: 0; }
+    #star-map g[data-id]:focus-visible { opacity: 1 !important; }
+    #star-map g[data-id]:focus-visible .star-focus { opacity: 0.9; }
+    .panel-link { display: inline-block; margin-top: 14px; font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--tech); text-decoration: none; border-bottom: 1px solid currentColor; padding-bottom: 4px; }
+    .site-section { padding: 120px 60px; }
+    .section-label { font-size: 10px; font-weight: 400; letter-spacing: 0.35em; text-transform: uppercase; color: var(--metal-text); margin-bottom: 40px; }
+    .what-body { font-family: "Cormorant Garamond", serif; font-size: clamp(22px, 2.3vw, 32px); font-weight: 300; line-height: 1.5; color: var(--metal-2); max-width: 880px; }
+    .what-quote { margin-top: 88px; max-width: 1040px; }
+    .svc-hint { font-size: 11px; letter-spacing: 0.15em; color: var(--metal-text); margin: -24px 0 40px; }
+    .svc-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; max-width: 1120px; }
+    .svc { grid-column: span 2; position: relative; min-height: 340px; border: 1px solid var(--metal-4); background: rgba(255,255,255,0.012); }
+    .svc:nth-child(4) { grid-column: 2 / span 2; } .svc:nth-child(5) { grid-column: 4 / span 2; }
+    .svc.tech { --c: var(--tech); } .svc.capital { --c: var(--capital); } .svc.culture { --c: var(--culture); }
+    .svc-front { padding: 28px 28px 32px; display: flex; flex-direction: column; align-items: center; }
+    .svc-art { width: 100%; max-width: 260px; }
+    .svc-art svg { width: 100%; display: block; overflow: visible; }
+    .svc-name { font-family: "Cormorant Garamond", serif; font-size: 26px; font-weight: 400; line-height: 1.15; color: var(--c); text-align: center; margin-top: 20px; }
+    .svc-back { padding: 0 28px 32px; }
+    .svc-back-name { display: none; }
+    .svc-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .svc-list li { font-family: "Cormorant Garamond", serif; font-size: 18px; line-height: 1.45; color: var(--metal-2); padding-left: 18px; position: relative; }
+    .svc-list li::before { content: ""; position: absolute; left: 0; top: 0.7em; width: 5px; height: 5px; border-radius: 50%; background: var(--c); box-shadow: 0 0 6px var(--c); }
+    .svc-flip, .svc-hint { display: none; }
+    @media (prefers-reduced-motion: no-preference) {
+      .js .svc-hint { display: block; }
+      .js .svc-back { position: absolute; inset: 0; padding: 40px 32px; display: flex; flex-direction: column; justify-content: center; opacity: 0; transition: opacity 0.5s ease 0.15s; pointer-events: none; }
+      .js .svc-back-name { display: block; font-family: "Cormorant Garamond", serif; font-size: 26px; line-height: 1.15; color: var(--c); margin-bottom: 20px; }
+      .js .svc-flip { display: block; position: absolute; inset: 0; width: 100%; background: transparent; border: none; cursor: pointer; z-index: 2; }
+      .js .svc-flip:focus-visible { outline: 2px solid var(--c); outline-offset: -2px; }
+      .svc-star, .svc-line, .svc-name { transition: transform 0.6s ease, opacity 0.5s ease; }
+      .svc.on .svc-star { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+      .svc.on .svc-line, .svc.on .svc-name { opacity: 0; }
+      .svc.on .svc-back { opacity: 1; }
+    }
+    @media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+      .js .svc:hover .svc-star { transform: translate(var(--dx), var(--dy)); opacity: 0; }
+      .js .svc:hover .svc-line, .js .svc:hover .svc-name { opacity: 0; }
+      .js .svc:hover .svc-back { opacity: 1; }
+    }
+    .eng-lead { font-family: "Cormorant Garamond", serif; font-size: clamp(22px, 2.3vw, 32px); font-weight: 300; color: var(--metal-2); margin-bottom: 36px; }
+    .eng-list { list-style: none; display: flex; flex-direction: column; gap: 24px; max-width: 880px; }
+    .eng-list li { font-family: "Cormorant Garamond", serif; font-size: 21px; line-height: 1.5; color: var(--metal-2); border-left: 1px solid var(--metal-4); padding-left: 24px; }
+    .tools-list { list-style: none; max-width: 880px; margin-bottom: 56px; }
+    .tools-list li { display: grid; grid-template-columns: minmax(260px, 1fr) 1.4fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--metal-4); }
+    .tools-list li:first-child { border-top: 1px solid var(--metal-4); }
+    .tool-name { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; color: var(--metal-1); }
+    .tool-by { font-family: "Syne", sans-serif; font-size: 9px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--metal-text); margin-left: 10px; }
+    .tool-desc { font-family: "Cormorant Garamond", serif; font-size: 19px; color: var(--metal-2); }
+    .tool-soon { display: inline-block; margin-left: 12px; font-family: "Syne", sans-serif; font-size: 9px; letter-spacing: 0.25em; text-transform: uppercase; padding: 3px 10px; border: 1px solid currentColor; color: var(--capital); vertical-align: middle; }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes twinkle { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
     @media (max-width: 768px) {
@@ -107,9 +163,25 @@
       #star-panel { padding: 20px 24px 24px; } .panel-name { font-size: 20px; }
       .constellation-legend { padding: 24px 24px 48px; flex-wrap: wrap; }
       #constellation-summary { margin: 0 24px 0; } .cs-body { grid-template-columns: 1fr; }
-      #philosophy { padding: 80px 24px; }
       #contact { padding: 80px 24px 60px; } .contact-links { flex-direction: column; gap: 24px; }
       footer { flex-direction: column; gap: 16px; text-align: center; }
+      .site-section { padding: 80px 24px; }
+      .what-quote { margin-top: 56px; }
+      .tools-list li { grid-template-columns: 1fr; gap: 6px; }
+    }
+    @media (max-width: 1024px) {
+      .svc-grid { grid-template-columns: repeat(2, 1fr); }
+      .svc, .svc:nth-child(4), .svc:nth-child(5) { grid-column: auto; }
+    }
+    @media (max-width: 640px) {
+      .svc-grid { grid-template-columns: 1fr; }
+      #star-map { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      #star-map svg { width: 600px; }
+      .hint-mobile { display: inline; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { animation: none !important; transition: none !important; }
     }
   </style>
 </head>
@@ -118,12 +190,15 @@
 <nav>
   <div class="nav-logo">It Just Gets Better</div>
   <ul class="nav-links">
+    <li><a href="#what">What We Do</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#tools">Tools</a></li>
     <li><a href="#constellation">The Web</a></li>
-    <li><a href="#philosophy">Philosophy</a></li>
     <li><a href="#contact">Connect</a></li>
   </ul>
 </nav>
 
+<main>
 <section id="hero">
   <div class="hero-bg-line"></div>
   <h1 class="hero-headline">
@@ -159,41 +234,172 @@
 
 <div class="section-divider"></div>
 
+<section id="what" class="site-section">
+  <h2 class="section-label">What We Do</h2>
+  <p class="what-body">It Just Gets Better LLC provides technology and strategy advisory services to clients across multiple industries. The firm embeds in a client organization, identifies the critical workflow or opportunity, builds the system or strategy that addresses it, and operates that solution.</p>
+  <figure class="what-quote">
+    <blockquote class="philosophy-quote">
+      &#x201C;Faith taught me to look for the inevitable. Entertainment and technology showed me the value of attention. And every room I was not supposed to be in taught me <em>the characteristics of who should be.</em>&#x201D;
+    </blockquote>
+    <figcaption class="philosophy-attr">&#x2014; Wilshem A. Pennick</figcaption>
+  </figure>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="services" class="site-section">
+  <h2 class="section-label">Services</h2>
+  <p class="svc-hint" aria-hidden="true">Hover, tap, or press Enter on a panel for detail</p>
+  <div class="svc-grid">
+    <article class="svc tech" aria-labelledby="svc-research-name">
+      <div class="svc-front">
+        <div class="svc-art" data-art="research" aria-hidden="true"></div>
+        <h3 class="svc-name" id="svc-research-name">Research</h3>
+      </div>
+      <div class="svc-back">
+        <p class="svc-back-name" aria-hidden="true">Research</p>
+        <ul class="svc-list">
+          <li>Market, competitive, and commercial research</li>
+          <li>Prior art and patent landscape research</li>
+        </ul>
+      </div>
+      <button type="button" class="svc-flip" aria-pressed="false"><span class="sr-only">Research details</span></button>
+    </article>
+    <article class="svc capital" aria-labelledby="svc-analysis-name">
+      <div class="svc-front">
+        <div class="svc-art" data-art="analysis" aria-hidden="true"></div>
+        <h3 class="svc-name" id="svc-analysis-name">Analysis</h3>
+      </div>
+      <div class="svc-back">
+        <p class="svc-back-name" aria-hidden="true">Analysis</p>
+        <ul class="svc-list">
+          <li>Feasibility, investment, and commercial viability assessment</li>
+          <li>Funding-fit analysis</li>
+        </ul>
+      </div>
+      <button type="button" class="svc-flip" aria-pressed="false"><span class="sr-only">Analysis details</span></button>
+    </article>
+    <article class="svc culture" aria-labelledby="svc-partnerships-name">
+      <div class="svc-front">
+        <div class="svc-art" data-art="partnerships" aria-hidden="true"></div>
+        <h3 class="svc-name" id="svc-partnerships-name">Partnerships</h3>
+      </div>
+      <div class="svc-back">
+        <p class="svc-back-name" aria-hidden="true">Partnerships</p>
+        <ul class="svc-list">
+          <li>Partnership development and stakeholder coordination</li>
+        </ul>
+      </div>
+      <button type="button" class="svc-flip" aria-pressed="false"><span class="sr-only">Partnerships details</span></button>
+    </article>
+    <article class="svc tech" aria-labelledby="svc-systems-name">
+      <div class="svc-front">
+        <div class="svc-art" data-art="systems" aria-hidden="true"></div>
+        <h3 class="svc-name" id="svc-systems-name">System design and implementation</h3>
+      </div>
+      <div class="svc-back">
+        <p class="svc-back-name" aria-hidden="true">System design and implementation</p>
+        <ul class="svc-list">
+          <li>Technology systems and AI tools built with human-in-the-loop controls</li>
+        </ul>
+      </div>
+      <button type="button" class="svc-flip" aria-pressed="false"><span class="sr-only">System design and implementation details</span></button>
+    </article>
+    <article class="svc capital" aria-labelledby="svc-commercialization-name">
+      <div class="svc-front">
+        <div class="svc-art" data-art="commercialization" aria-hidden="true"></div>
+        <h3 class="svc-name" id="svc-commercialization-name">Technology commercialization</h3>
+      </div>
+      <div class="svc-back">
+        <p class="svc-back-name" aria-hidden="true">Technology commercialization</p>
+        <ul class="svc-list">
+          <li>Intellectual property strategy and licensing support, to take technologies from concept to market</li>
+        </ul>
+      </div>
+      <button type="button" class="svc-flip" aria-pressed="false"><span class="sr-only">Technology commercialization details</span></button>
+    </article>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="engagements" class="site-section">
+  <h2 class="section-label">Representative Engagements</h2>
+  <p class="eng-lead">Representative engagements include:</p>
+  <ul class="eng-list">
+    <li>The evaluation of diagnostic AI, medical devices, and surgical visualization tools for a MedTech corridor</li>
+    <li>Sourcing and due diligence of early-stage companies as a contracted venture scout</li>
+    <li>The conception and ongoing advisory of a new division within a defense-technology startup</li>
+  </ul>
+</section>
+
+<div class="section-divider"></div>
+
+<section id="tools" class="site-section">
+  <h2 class="section-label">Tools</h2>
+  <ul class="tools-list">
+    <li>
+      <div><span class="tool-name">Integrity</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div class="tool-desc">Your data, protected and separate</div>
+    </li>
+    <li>
+      <div><span class="tool-name">Continuity</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div class="tool-desc">People, ownership, and funding through change</div>
+    </li>
+    <li>
+      <div><span class="tool-name">Memory</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div class="tool-desc">Find and produce your records</div>
+    </li>
+    <li>
+      <div><span class="tool-name">Clarity</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div class="tool-desc">Know what your contracts say<span class="tool-soon">Available soon</span></div>
+    </li>
+    <li>
+      <div><span class="tool-name">Momentum</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div class="tool-desc">Strategy and operational support</div>
+    </li>
+  </ul>
+  <a href="https://platform.itjustgetsbetter.org" class="contact-link platform-link" hidden>Explore the tools at platform.itjustgetsbetter.org</a>
+</section>
+
+<div class="section-divider"></div>
+
 <section id="constellation">
   <div class="constellation-header">
     <h2 class="constellation-title">The Web</h2>
     <div class="constellation-hint">
       Select a star to explore<br/>
-      Click a constellation below to highlight it
+      Click a constellation below to highlight it<span class="hint-mobile"><br/>Swipe sideways to see the whole map</span>
     </div>
   </div>
   <div id="star-map-wrapper" style="position:relative;">
     <div id="star-map"></div>
     <div id="star-panel">
-      <div>
+      <div aria-live="polite">
         <div class="panel-constellations" id="panel-tags"></div>
         <div class="panel-name" id="panel-name"></div>
         <div class="panel-desc" id="panel-desc"></div>
+        <a class="panel-link" id="panel-link" href="https://platform.itjustgetsbetter.org" hidden>Visit platform.itjustgetsbetter.org</a>
       </div>
-      <div class="panel-close" id="panel-close">&#x2715; close</div>
+      <button type="button" class="panel-close" id="panel-close" aria-label="Close star details">&#x2715; close</button>
     </div>
   </div>
   <div class="constellation-legend">
     <span class="legend-label">Constellations</span>
-    <div class="legend-item" data-type="tech" style="color:var(--tech)">
+    <button type="button" class="legend-item" data-type="tech" aria-pressed="false" style="color:var(--tech)">
       <div class="legend-dot" style="background:var(--tech);box-shadow:0 0 5px var(--tech)"></div>Technology
-    </div>
-    <div class="legend-item" data-type="capital" style="color:var(--capital)">
+    </button>
+    <button type="button" class="legend-item" data-type="capital" aria-pressed="false" style="color:var(--capital)">
       <div class="legend-dot" style="background:var(--capital);box-shadow:0 0 5px var(--capital)"></div>Capital
-    </div>
-    <div class="legend-item" data-type="culture" style="color:var(--culture)">
+    </button>
+    <button type="button" class="legend-item" data-type="culture" aria-pressed="false" style="color:var(--culture)">
       <div class="legend-dot" style="background:var(--culture);box-shadow:0 0 5px var(--culture)"></div>Culture
-    </div>
+    </button>
   </div>
-  <div id="constellation-summary">
+  <div id="constellation-summary" aria-live="polite">
     <div class="cs-header">
       <div class="cs-title" id="cs-title"></div>
-      <div class="cs-close" id="cs-close">&#x2715; close</div>
+      <button type="button" class="cs-close" id="cs-close" aria-label="Close constellation summary">&#x2715; close</button>
     </div>
     <div class="cs-body">
       <div class="cs-desc" id="cs-desc"></div>
@@ -203,16 +409,6 @@
       </div>
     </div>
   </div>
-</section>
-
-<div class="section-divider"></div>
-
-<section id="philosophy">
-  <div class="philosophy-label">Foundation</div>
-  <blockquote class="philosophy-quote">
-    &#x201C;Faith taught me to look for the inevitable. Entertainment and technology showed me the value of attention. And every room I was not supposed to be in taught me <em>the characteristics of who should be.</em>&#x201D;
-  </blockquote>
-  <div class="philosophy-attr">&#x2014; Wilshem A. Pennick</div>
 </section>
 
 <div class="section-divider"></div>
@@ -231,9 +427,16 @@
     <div class="footer-copy">&#x00A9; 2026 &#x00B7; It Just Gets Better LLC</div>
   </footer>
 </section>
+</main>
 
 <script>
 (function() {
+  // Switch to true once platform.itjustgetsbetter.org is live.
+  var PLATFORM_LIVE = false;
+  var PLATFORM_URL = 'https://platform.itjustgetsbetter.org';
+  var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.classList.add('js');
+
   var COLORS = { tech: '#7aafc4', capital: '#c4a45a', culture: '#9f8fc4' };
 
   var CDATA = {
@@ -274,7 +477,8 @@
     { id:'cxmmunity', label:'Cxmmunity', constellations:['culture','tech'], x:0.36, y:0.57, size:5, brightness:0.78, desc:'Relationships with Fortune 100 companies, digital equity initiatives, and the Congressional Black Caucus.' },
     { id:'cxmmunity-found', label:'Cxmmunity Foundation', constellations:['culture'], x:0.44, y:0.70, size:4.5, brightness:0.68, desc:'HBCU and gaming diversity institutional partnerships at the intersection of education and access.' },
     { id:'bit', label:'Blacks in Technology', constellations:['culture','tech'], x:0.36, y:0.83, size:5, brightness:0.75, desc:'The largest Black tech community globally - a thread running from prison reform through Atlanta and into the present.' },
-    { id:'operation-hope', label:'Operation New Hope', constellations:['culture','capital'], x:0.64, y:0.68, size:4.5, brightness:0.68, desc:'Relationships with Duval County City Council, reentry service providers, credit unions, and second chance agencies.' }
+    { id:'operation-hope', label:'Operation New Hope', constellations:['culture','capital'], x:0.64, y:0.68, size:4.5, brightness:0.68, desc:'Relationships with Duval County City Council, reentry service providers, credit unions, and second chance agencies.' },
+    { id:'tools', label:'Tools by It Just Gets Better', constellations:['tech'], x:0.38, y:0.30, size:5, brightness:0.80, desc:'Five suites built by It Just Gets Better: Integrity, Continuity, Memory, Clarity, and Momentum.', link:true }
   ];
 
   var CONNECTIONS = [
@@ -306,7 +510,9 @@
     { a:'fsu', b:'ijgb', type:'culture' },
     { a:'operation-hope', b:'ijgb', type:'culture' },
     { a:'promising', b:'operation-hope', type:'culture' },
-    { a:'fsu', b:'neural-earth', type:'culture' }
+    { a:'fsu', b:'neural-earth', type:'culture' },
+    { a:'tools', b:'ijgb', type:'tech' },
+    { a:'tools', b:'microtron', type:'tech' }
   ];
 
   var starGlobal, lineGlobal, activeLegend = null, activeFilterBtn = null;
@@ -327,7 +533,7 @@
       var g = lbl.closest('g[data-id]');
       var pid = g ? g.getAttribute('data-id') : null;
       var star = STARS.filter(function(s){ return s.id === pid; })[0];
-      lbl.setAttribute('opacity', (star && star.constellations.indexOf(type) > -1) ? '0.9' : '0.03');
+      lbl.setAttribute('opacity', (star && star.constellations.indexOf(type) > -1) ? '0.9' : '0');
     });
   }
 
@@ -335,7 +541,7 @@
     if (!starGlobal || !lineGlobal) return;
     starGlobal.querySelectorAll('g[data-id]').forEach(function(el){ el.style.opacity='1'; });
     lineGlobal.querySelectorAll('line').forEach(function(l){ l.setAttribute('opacity','0.18'); l.setAttribute('stroke-width','0.65'); });
-    starGlobal.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.50'); });
+    starGlobal.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.80'); });
   }
 
   function setupFilters() {
@@ -379,13 +585,15 @@
         if (activeLegend === type && summary.classList.contains('visible')) {
           summary.classList.remove('visible');
           item.classList.remove('active');
+          item.setAttribute('aria-pressed','false');
           activeLegend = null;
           clearHighlight();
           return;
         }
-        document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); });
+        document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); i.setAttribute('aria-pressed','false'); });
         activeLegend = type;
         item.classList.add('active');
+        item.setAttribute('aria-pressed','true');
         var d = CDATA[type];
         var t = document.getElementById('cs-title');
         t.textContent = d.label;
@@ -399,7 +607,7 @@
     });
     document.getElementById('cs-close').addEventListener('click', function() {
       document.getElementById('constellation-summary').classList.remove('visible');
-      document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); });
+      document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); i.setAttribute('aria-pressed','false'); });
       activeLegend = null;
       clearHighlight();
     });
@@ -413,6 +621,7 @@
     var svg = document.createElementNS(ns,'svg');
     svg.setAttribute('viewBox','0 0 ' + W + ' ' + H);
     svg.setAttribute('preserveAspectRatio','xMidYMid meet');
+    svg.setAttribute('role','group'); svg.setAttribute('aria-label','Network map. Select a star to read about it.');
 
     var defs = document.createElementNS(ns,'defs');
     Object.keys(COLORS).forEach(function(key) {
@@ -426,7 +635,7 @@
     });
     svg.appendChild(defs);
 
-    var bg = document.createElementNS(ns,'g');
+    var bg = document.createElementNS(ns,'g'); bg.setAttribute('aria-hidden','true');
     function rng(s){ var x=Math.sin(s)*10000; return x-Math.floor(x); }
     for(var i=0;i<240;i++){
       var c=document.createElementNS(ns,'circle');
@@ -440,7 +649,7 @@
     var pos={};
     STARS.forEach(function(s){ pos[s.id]={x:s.x*W,y:s.y*H}; });
 
-    var lineG=document.createElementNS(ns,'g');
+    var lineG=document.createElementNS(ns,'g'); lineG.setAttribute('aria-hidden','true');
     CONNECTIONS.forEach(function(conn){
       var a=pos[conn.a],b=pos[conn.b]; if(!a||!b) return;
       var line=document.createElementNS(ns,'line');
@@ -458,6 +667,7 @@
     STARS.forEach(function(star){
       var p=pos[star.id], x=p.x, y=p.y;
       var g=document.createElementNS(ns,'g'); g.setAttribute('data-id',star.id); g.style.cursor='pointer';
+      g.setAttribute('tabindex','0'); g.setAttribute('role','button'); g.setAttribute('aria-label',star.label);
       var col=COLORS[star.constellations[0]];
       star.constellations.slice(1).forEach(function(cn,i){
         var ring=document.createElementNS(ns,'circle');
@@ -467,13 +677,14 @@
       });
       var halo=document.createElementNS(ns,'circle'); halo.setAttribute('cx',x); halo.setAttribute('cy',y); halo.setAttribute('r',star.size+3); halo.setAttribute('fill',col); halo.setAttribute('opacity','0.07'); g.appendChild(halo);
       var circle=document.createElementNS(ns,'circle'); circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r',star.size); circle.setAttribute('fill',col); circle.setAttribute('opacity',String(0.5+star.brightness*0.45)); circle.setAttribute('filter','url(#glow-'+star.constellations[0]+')'); g.appendChild(circle);
+      var ringF=document.createElementNS(ns,'circle'); ringF.setAttribute('cx',x); ringF.setAttribute('cy',y); ringF.setAttribute('r',star.size+9); ringF.setAttribute('fill','none'); ringF.setAttribute('stroke','#e8e8e8'); ringF.setAttribute('stroke-width','1.5'); ringF.setAttribute('class','star-focus'); g.appendChild(ringF);
       var hit=document.createElementNS(ns,'circle'); hit.setAttribute('cx',x); hit.setAttribute('cy',y); hit.setAttribute('r',Math.max(star.size+12,20)); hit.setAttribute('fill','transparent'); g.appendChild(hit);
-      var lbl=document.createElementNS(ns,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',y+star.size+15); lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-family','Cormorant Garamond, serif'); lbl.setAttribute('font-size',star.id==='ijgb'?'12':'10.5'); lbl.setAttribute('fill',col); lbl.setAttribute('opacity','0.50'); lbl.setAttribute('pointer-events','none'); lbl.setAttribute('class','star-label'); lbl.textContent=star.label; g.appendChild(lbl);
+      var lbl=document.createElementNS(ns,'text'); lbl.setAttribute('x',x); lbl.setAttribute('y',y+star.size+15); lbl.setAttribute('text-anchor','middle'); lbl.setAttribute('font-family','Cormorant Garamond, serif'); lbl.setAttribute('font-size',star.id==='ijgb'?'12':'10.5'); lbl.setAttribute('fill',col); lbl.setAttribute('opacity','0.80'); lbl.setAttribute('pointer-events','none'); lbl.setAttribute('class','star-label'); lbl.textContent=star.label; g.appendChild(lbl);
       starG.appendChild(g);
 
       g.addEventListener('click',function(e){
         e.stopPropagation();
-        document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); });
+        document.querySelectorAll('.legend-item').forEach(function(i){ i.classList.remove('active'); i.setAttribute('aria-pressed','false'); });
         document.getElementById('constellation-summary').classList.remove('visible');
         activeLegend=null;
         selected=star.id;
@@ -481,15 +692,19 @@
         document.getElementById('panel-desc').textContent=star.desc;
         var tagsEl=document.getElementById('panel-tags'); tagsEl.innerHTML='';
         star.constellations.forEach(function(cn){ var tag=document.createElement('span'); tag.className='panel-tag '+cn; tag.textContent=cn.charAt(0).toUpperCase()+cn.slice(1); tagsEl.appendChild(tag); });
+        document.getElementById('panel-link').hidden=!(star.link && PLATFORM_LIVE);
         document.getElementById('star-panel').classList.add('visible');
         var connected={}; connected[star.id]=true;
         CONNECTIONS.forEach(function(cn){ if(cn.a===star.id) connected[cn.b]=true; if(cn.b===star.id) connected[cn.a]=true; });
         starG.querySelectorAll('g[data-id]').forEach(function(el){ el.style.opacity=connected[el.getAttribute('data-id')]?'1':'0.28'; });
         lineG.querySelectorAll('line').forEach(function(line){ var isConn=line.getAttribute('data-a')===star.id||line.getAttribute('data-b')===star.id; line.setAttribute('opacity',isConn?'0.80':'0.03'); line.setAttribute('stroke-width',isConn?'1.3':'0.4'); });
-        starG.querySelectorAll('.star-label').forEach(function(el){ var g2=el.closest('g[data-id]'); var pid=g2?g2.getAttribute('data-id'):null; el.setAttribute('opacity',connected[pid]?'0.9':'0.06'); });
+        starG.querySelectorAll('.star-label').forEach(function(el){ var g2=el.closest('g[data-id]'); var pid=g2?g2.getAttribute('data-id'):null; el.setAttribute('opacity',connected[pid]?'0.9':'0'); });
+      });
+      g.addEventListener('keydown',function(e){
+        if(e.key==='Enter'||e.key===' '){ e.preventDefault(); g.dispatchEvent(new MouseEvent('click',{bubbles:true})); }
       });
       g.addEventListener('mouseenter',function(){ if(!selected) g.querySelector('.star-label').setAttribute('opacity','0.95'); });
-      g.addEventListener('mouseleave',function(){ if(!selected) starG.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.50'); }); });
+      g.addEventListener('mouseleave',function(){ if(!selected) starG.querySelectorAll('.star-label').forEach(function(l){ l.setAttribute('opacity','0.80'); }); });
     });
     svg.appendChild(starG);
     starGlobal=starG;
@@ -502,15 +717,111 @@
       else { clearHighlight(); }
     }
     svg.addEventListener('click',clearStar);
-    document.getElementById('panel-close').addEventListener('click',function(e){ e.stopPropagation(); clearStar(); });
+    document.getElementById('panel-close').addEventListener('click',function(e){
+      e.stopPropagation();
+      var back=selected&&starG.querySelector('g[data-id="'+selected+'"]');
+      clearStar();
+      if(back) back.focus();
+    });
+    document.getElementById('star-map-wrapper').addEventListener('keydown',function(e){
+      if(e.key==='Escape'&&selected){ var back=starG.querySelector('g[data-id="'+selected+'"]'); clearStar(); if(back) back.focus(); }
+    });
+    if(container.scrollWidth>container.clientWidth) container.scrollLeft=(container.scrollWidth-container.clientWidth)/2;
+  }
+
+  // Service panel art: small constellations drawn the way buildMap draws stars.
+  // Points are [x, y, size, brightness] in a 200 x 140 box; lines are index pairs.
+  function svcArt() {
+    var A = {};
+    var ring=[], i, a;
+    for(i=0;i<16;i++){ a=i/16*Math.PI*2; ring.push([80+42*Math.cos(a),62+42*Math.sin(a),i%4===2?2.6:2,0.8]); }
+    var rl=[]; for(i=0;i<16;i++) rl.push([i,(i+1)%16]);
+    ring.push([80,62,1.6,0.6]);
+    ring.push([122,104,2.2,0.8],[136,118,2.4,0.85],[150,132,3,1]);
+    rl.push([2,17],[17,18],[18,19]);
+    A.research={ color:'tech', pts:ring, lines:rl };
+
+    var an=[[24,104,2.2,0.75],[48,84,2.2,0.75],[68,94,2,0.7],[92,64,2.4,0.8],[114,74,2.2,0.75],[138,42,2.6,0.85],[158,50,2.2,0.75],[180,18,3.4,1]];
+    var al=[]; for(i=0;i<7;i++) al.push([i,i+1]);
+    for(i=0;i<9;i++) an.push([20+i*20,124,0.9,0.3]);
+    A.analysis={ color:'capital', pts:an, lines:al };
+
+    var pp=[], pl=[];
+    [[44,70],[156,70]].forEach(function(c){
+      var base=pp.length; pp.push([c[0],c[1],3.4,1]);
+      for(var k=0;k<6;k++){ var t=k/6*Math.PI*2+0.4; pp.push([c[0]+20*Math.cos(t),c[1]+20*Math.sin(t),k%2?1.8:2.2,0.7]); pl.push([base,base+1+k]); }
+    });
+    pl.push([0,7,'bright']);
+    A.partnerships={ color:'culture', pts:pp, lines:pl };
+
+    var sd=[], sl=[];
+    [30,65,100,135,170].forEach(function(x){ sd.push([x,20,2,0.75]); });   // 0-4 top
+    [45,70,95].forEach(function(y){ sd.push([170,y,2,0.75]); });           // 5-7 right
+    [170,135,100,65,30].forEach(function(x){ sd.push([x,120,2,0.75]); });  // 8-12 bottom
+    [95,70,45].forEach(function(y){ sd.push([30,y,2,0.75]); });            // 13-15 left
+    for(i=0;i<16;i++) sl.push([i,(i+1)%16]);
+    sd.push([80,50,2,0.8],[100,50,1.8,0.75],[120,50,2,0.8],[120,70,1.8,0.75],[120,90,2,0.8],[80,90,2,0.8],[80,70,1.8,0.75],[100,70,3.4,1]); // 16-23 core
+    [[16,17],[17,18],[18,19],[19,20],[20,21],[21,22],[22,16],[17,2],[19,6],[22,14],[23,19],[23,22]].forEach(function(l){ sl.push(l); });
+    A.systems={ color:'tech', pts:sd, lines:sl };
+
+    var tc=[[20,124,3.4,1]], tl=[];
+    for(i=1;i<=10;i++){ var t=i/10; tc.push([20+164*t,124-110*Math.pow(t,1.6),i===10?3.4:1.6+t*0.8,i===10?1:0.6+t*0.3]); tl.push([i-1,i]); }
+    tc.push([6,132,1.4,0.5],[34,132,1.4,0.5]); tl.push([11,0],[0,12]);
+    A.commercialization={ color:'capital', pts:tc, lines:tl };
+    return A;
+  }
+
+  function buildServiceArt() {
+    var ns='http://www.w3.org/2000/svg', ART=svcArt();
+    document.querySelectorAll('.svc-art').forEach(function(box){
+      var key=box.getAttribute('data-art'), art=ART[key]; if(!art) return;
+      var col=COLORS[art.color], fid='svc-glow-'+key;
+      var svg=document.createElementNS(ns,'svg');
+      svg.setAttribute('viewBox','0 0 200 140'); svg.setAttribute('aria-hidden','true'); svg.setAttribute('focusable','false');
+      var defs=document.createElementNS(ns,'defs');
+      var f=document.createElementNS(ns,'filter');
+      f.setAttribute('id',fid); f.setAttribute('x','-60%'); f.setAttribute('y','-60%'); f.setAttribute('width','220%'); f.setAttribute('height','220%');
+      var blur=document.createElementNS(ns,'feGaussianBlur'); blur.setAttribute('stdDeviation','2.2'); blur.setAttribute('result','cb');
+      var merge=document.createElementNS(ns,'feMerge');
+      ['cb','SourceGraphic'].forEach(function(i){ var n=document.createElementNS(ns,'feMergeNode'); n.setAttribute('in',i); merge.appendChild(n); });
+      f.appendChild(blur); f.appendChild(merge); defs.appendChild(f); svg.appendChild(defs);
+      art.lines.forEach(function(l){
+        var a=art.pts[l[0]], b=art.pts[l[1]], bright=l[2]==='bright';
+        var line=document.createElementNS(ns,'line');
+        line.setAttribute('x1',a[0]); line.setAttribute('y1',a[1]); line.setAttribute('x2',b[0]); line.setAttribute('y2',b[1]);
+        line.setAttribute('stroke',col); line.setAttribute('stroke-width',bright?'1.4':'0.65'); line.setAttribute('opacity',bright?'0.8':'0.18');
+        line.setAttribute('class','svc-line'); svg.appendChild(line);
+      });
+      var cx=0, cy=0; art.pts.forEach(function(p){ cx+=p[0]; cy+=p[1]; }); cx/=art.pts.length; cy/=art.pts.length;
+      art.pts.forEach(function(p,idx){
+        var g=document.createElementNS(ns,'g'); g.setAttribute('class','svc-star');
+        var dx=p[0]-cx, dy=p[1]-cy, d=Math.sqrt(dx*dx+dy*dy)||1, push=22+((idx*37)%11);
+        g.style.setProperty('--dx',(dx/d*push).toFixed(1)+'px'); g.style.setProperty('--dy',(dy/d*push).toFixed(1)+'px');
+        var halo=document.createElementNS(ns,'circle'); halo.setAttribute('cx',p[0]); halo.setAttribute('cy',p[1]); halo.setAttribute('r',p[2]+3); halo.setAttribute('fill',col); halo.setAttribute('opacity','0.07'); g.appendChild(halo);
+        var c=document.createElementNS(ns,'circle'); c.setAttribute('cx',p[0]); c.setAttribute('cy',p[1]); c.setAttribute('r',p[2]); c.setAttribute('fill',col); c.setAttribute('opacity',String(0.5+p[3]*0.45)); if(p[2]>1.2) c.setAttribute('filter','url(#'+fid+')'); g.appendChild(c);
+        svg.appendChild(g);
+      });
+      box.appendChild(svg);
+    });
+    document.querySelectorAll('.svc-flip').forEach(function(btn){
+      btn.addEventListener('click',function(){
+        var on=btn.getAttribute('aria-pressed')!=='true';
+        btn.setAttribute('aria-pressed',String(on));
+        btn.closest('.svc').classList.toggle('on',on);
+      });
+    });
   }
 
   window.addEventListener('load',function(){
     setupFilters();
     setupLegend();
     buildMap();
+    buildServiceArt();
+    if(PLATFORM_LIVE) document.querySelectorAll('.platform-link').forEach(function(a){ a.href=PLATFORM_URL; a.hidden=false; });
+    document.getElementById('panel-link').href=PLATFORM_URL;
+    if(REDUCED) return;
     var obs=new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting){ e.target.style.opacity=1; e.target.style.transform='translateY(0)'; } }); },{threshold:0.08});
-    ['#philosophy','#contact'].forEach(function(sel){ var el=document.querySelector(sel); if(el){ el.style.opacity=0; el.style.transform='translateY(24px)'; el.style.transition='opacity 0.9s ease, transform 0.9s ease'; obs.observe(el); } });
+    ['#what','#services','#engagements','#tools','#contact'].forEach(function(sel){ var el=document.querySelector(sel); if(el){ el.style.opacity=0; el.style.transform='translateY(24px)'; el.style.transition='opacity 0.9s ease, transform 0.9s ease'; obs.observe(el); } });
   });
 })();
 </script>
