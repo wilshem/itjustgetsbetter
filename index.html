@@ -168,6 +168,17 @@
     }
     .svc { transition: border-color 0.4s ease; }
     .svc:hover, .svc.on, .svc:focus-within { border-color: var(--c); }
+    @media (prefers-reduced-motion: no-preference) {
+      #star-map svg.map-wait .star-body, #star-map svg.map-wait .star-label, #star-map svg.map-wait line { opacity: 0; }
+      #star-map svg.map-intro .star-body { transform-box: fill-box; transform-origin: center; animation: starIgnite 1s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0s) backwards; }
+      #star-map svg.map-intro .star-label { animation: labelIn 0.9s ease calc(var(--d, 0s) + 0.35s) backwards; }
+      #star-map svg.map-intro line { stroke-dasharray: 1; animation: lineDraw 1.4s ease-in-out var(--d, 0s) backwards; }
+      #star-map .star-halo { transform-box: fill-box; transform-origin: center; animation: haloPulse var(--tw, 4s) ease-in-out var(--twd, 0s) infinite; }
+    }
+    @keyframes starIgnite { 0% { opacity: 0; transform: scale(0.2); } 60% { opacity: 1; transform: scale(1.35); } 100% { opacity: 1; transform: scale(1); } }
+    @keyframes labelIn { from { opacity: 0; } }
+    @keyframes lineDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+    @keyframes haloPulse { 0%, 100% { opacity: 0.07; transform: scale(1); } 50% { opacity: 0.24; transform: scale(1.6); } }
     @keyframes navIn { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
     @keyframes lineUp { from { transform: translateY(105%); } to { transform: translateY(0); } }
     @keyframes emShine { from { background-position: 100% 0; } to { background-position: 0 0; } }
@@ -641,7 +652,7 @@
       var c=document.createElementNS(ns,'circle');
       c.setAttribute('cx',rng(i*3.1)*W); c.setAttribute('cy',rng(i*7.3)*H);
       c.setAttribute('r',rng(i*13.7)*1.1+0.2); c.setAttribute('fill','white'); c.setAttribute('opacity',rng(i*5.9)*0.16+0.03);
-      if(i%9===0) c.style.animation='twinkle '+(2.5+rng(i)*3)+'s ease-in-out '+(rng(i*2)*3)+'s infinite';
+      if(i%5===0) c.style.animation='twinkle '+(2.5+rng(i)*3)+'s ease-in-out '+(rng(i*2)*3)+'s infinite';
       bg.appendChild(c);
     }
     svg.appendChild(bg);
@@ -654,7 +665,7 @@
       var a=pos[conn.a],b=pos[conn.b]; if(!a||!b) return;
       var line=document.createElementNS(ns,'line');
       line.setAttribute('x1',a.x); line.setAttribute('y1',a.y); line.setAttribute('x2',b.x); line.setAttribute('y2',b.y);
-      line.setAttribute('stroke',COLORS[conn.type]); line.setAttribute('stroke-width','0.65'); line.setAttribute('opacity','0.18');
+      line.setAttribute('pathLength','1'); line.setAttribute('stroke',COLORS[conn.type]); line.setAttribute('stroke-width','0.65'); line.setAttribute('opacity','0.18');
       line.setAttribute('data-a',conn.a); line.setAttribute('data-b',conn.b); line.setAttribute('data-type',conn.type);
       lineG.appendChild(line);
     });
@@ -676,7 +687,7 @@
         ring.setAttribute('fill','none'); ring.setAttribute('stroke',COLORS[cn]); ring.setAttribute('stroke-width','0.7'); ring.setAttribute('opacity','0.28');
         body.appendChild(ring);
       });
-      var halo=document.createElementNS(ns,'circle'); halo.setAttribute('cx',x); halo.setAttribute('cy',y); halo.setAttribute('r',star.size+3); halo.setAttribute('fill',col); halo.setAttribute('opacity','0.07'); body.appendChild(halo);
+      var halo=document.createElementNS(ns,'circle'); halo.setAttribute('class','star-halo'); halo.style.setProperty('--tw',(3+rng(x+y)*3).toFixed(2)+'s'); halo.style.setProperty('--twd',(-rng(x*y)*6).toFixed(2)+'s'); halo.setAttribute('cx',x); halo.setAttribute('cy',y); halo.setAttribute('r',star.size+3); halo.setAttribute('fill',col); halo.setAttribute('opacity','0.07'); body.appendChild(halo);
       var circle=document.createElementNS(ns,'circle'); circle.setAttribute('cx',x); circle.setAttribute('cy',y); circle.setAttribute('r',star.size); circle.setAttribute('fill',col); circle.setAttribute('opacity',String(0.5+star.brightness*0.45)); circle.setAttribute('filter','url(#glow-'+star.constellations[0]+')'); body.appendChild(circle);
       var ringF=document.createElementNS(ns,'circle'); ringF.setAttribute('cx',x); ringF.setAttribute('cy',y); ringF.setAttribute('r',star.size+9); ringF.setAttribute('fill','none'); ringF.setAttribute('stroke','#e8e8e8'); ringF.setAttribute('stroke-width','1.5'); ringF.setAttribute('class','star-focus'); g.appendChild(ringF);
       var hit=document.createElementNS(ns,'circle'); hit.setAttribute('cx',x); hit.setAttribute('cy',y); hit.setAttribute('r',Math.max(star.size+12,20)); hit.setAttribute('fill','transparent'); g.appendChild(hit);
@@ -709,6 +720,30 @@
     starGlobal=starG;
     container.appendChild(svg);
     placeLabels();
+    introMap();
+
+    // First time the map scrolls into view: stars ignite outward from the
+    // center, lines draw between them, then names fade in.
+    function introMap(){
+      if(REDUCED || !('IntersectionObserver' in window)) return;
+      var c=pos.ijgb, far=0, delay={};
+      STARS.forEach(function(s){ var d=Math.hypot(pos[s.id].x-c.x,pos[s.id].y-c.y); far=Math.max(far,d); delay[s.id]=d; });
+      STARS.forEach(function(s){
+        var d=(delay[s.id]/far*1.4).toFixed(2), g=starG.querySelector('g[data-id="'+s.id+'"]');
+        g.querySelector('.star-body').style.setProperty('--d',d+'s');
+        g.querySelector('.star-label').style.setProperty('--d',d+'s');
+        delay[s.id]=+d;
+      });
+      lineG.querySelectorAll('line').forEach(function(l){
+        l.style.setProperty('--d',(Math.max(delay[l.getAttribute('data-a')],delay[l.getAttribute('data-b')])+0.2).toFixed(2)+'s');
+      });
+      svg.classList.add('map-wait');
+      var io=new IntersectionObserver(function(entries){
+        if(!entries[0].isIntersecting) return;
+        svg.classList.remove('map-wait'); svg.classList.add('map-intro'); io.disconnect();
+      },{ threshold:0.25 });
+      io.observe(container);
+    }
 
     // Keep star names inside the map and clear of other names and orbs.
     // Each name tries below, above, right, then left of its orb, then
