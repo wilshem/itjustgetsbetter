@@ -146,6 +146,9 @@
     .tool-name { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; color: var(--metal-1); }
     .tool-by { font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--metal-text); margin-left: 10px; }
     .tool-desc { font-family: "Cormorant Garamond", serif; font-size: 19px; color: var(--metal-2); }
+    .waitlist-btn { display: inline-block; font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--capital); text-decoration: none; border: 1px solid var(--capital); padding: 16px 30px; margin-bottom: 40px; transition: background 0.3s, color 0.3s; }
+    .waitlist-btn:hover, .waitlist-btn:focus-visible { background: var(--capital); color: var(--bg); }
+    .waitlist-btn:focus-visible { outline: 2px solid var(--capital); outline-offset: 4px; }
     .tool-soon { display: inline-block; margin-left: 12px; font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; padding: 3px 10px; border: 1px solid currentColor; color: var(--capital); vertical-align: middle; }
     @media (prefers-reduced-motion: no-preference) {
       nav { animation: navIn 0.9s ease 0.1s both; }
@@ -381,6 +384,7 @@
       <div class="tool-desc">Strategy and operational support</div>
     </li>
   </ul>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link" data-reveal style="--i:7">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
   <a href="https://platform.itjustgetsbetter.org" class="contact-link platform-link" hidden>Explore the software at platform.itjustgetsbetter.org</a>
 </section>
 
@@ -452,6 +456,8 @@
   // Switch to true once platform.itjustgetsbetter.org is live; shows the Software link.
   var PLATFORM_LIVE = false;
   var PLATFORM_URL = 'https://platform.itjustgetsbetter.org';
+  // Where "Get release updates" goes. Point it at the subdomain page later.
+  var WAITLIST_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform';
   var REDUCED = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.documentElement.classList.add('js');
 
@@ -899,6 +905,7 @@
     setupLegend();
     buildMap();
     buildServiceArt();
+    document.querySelectorAll('.waitlist-link').forEach(function(a){ a.href=WAITLIST_URL; });
     if(PLATFORM_LIVE) document.querySelectorAll('.platform-link').forEach(function(a){ a.href=PLATFORM_URL; a.hidden=false; });
   });
 })();
