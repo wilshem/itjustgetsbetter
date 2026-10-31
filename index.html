@@ -171,7 +171,8 @@
     #demo-dialog.tall { width: min(92vw, calc((100vh - 120px) * 9 / 16)); width: min(92vw, calc((100dvh - 120px) * 9 / 16)); }
     #demo-dialog.tall video { aspect-ratio: 9 / 16; }
     .demo-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: rgba(6, 6, 10, 0.82); text-align: center; padding: 24px; }
-    .demo-end[hidden] { display: none; }
+    .demo-end[hidden], .demo-end [hidden] { display: none; }
+    .what-actions { margin-top: 36px; }
     .demo-end .waitlist-btn { margin-bottom: 0; }
     #demo-dialog.tall .demo-end .waitlist-btn { padding: 16px 18px; letter-spacing: 0.16em; white-space: nowrap; }
     .label-short { display: none; }
@@ -337,6 +338,7 @@
 <section id="what" class="site-section">
   <h2 class="section-label" data-reveal>What We Do</h2>
   <p class="what-body" data-reveal style="--i:1">It Just Gets Better LLC provides technology and strategy advisory services to clients across multiple industries. The firm embeds in a client organization, identifies the critical workflow or opportunity, builds the system or strategy that addresses it, and operates that solution. We call this approach Momentum. It shapes every engagement and every tool we build.</p>
+  <div class="what-actions" data-reveal style="--i:2"><button type="button" class="waitlist-btn" data-demo-open="momentum" aria-haspopup="dialog"><span class="play-mark" aria-hidden="true"></span>See how we work<span class="sr-only"> (30-second video)</span></button></div>
 </section>
 
 <div class="section-divider"></div>
@@ -450,7 +452,7 @@
   </ul>
   <div class="software-actions" data-reveal style="--i:7">
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
-    <button type="button" class="waitlist-btn" data-demo-open aria-haspopup="dialog"><span class="play-mark" aria-hidden="true"></span><span class="label-long">Watch the 90-second software demo</span><span class="label-short">90-sec software demo</span></button>
+    <button type="button" class="waitlist-btn" data-demo-open="software" aria-haspopup="dialog"><span class="play-mark" aria-hidden="true"></span><span class="label-long">Watch the 90-second software demo</span><span class="label-short">90-sec software demo</span></button>
   </div>
   <a href="https://platform.itjustgetsbetter.org" class="contact-link platform-link" hidden>Explore the software at platform.itjustgetsbetter.org</a>
 </section>
@@ -524,7 +526,8 @@
     <source src="media/ijgb-software-demo.mp4" type="video/mp4" />
   </video>
   <div class="demo-end" hidden>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary" data-end-for="software">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
+    <a href="mailto:better@itjustgetsbetter.org" class="waitlist-btn primary" data-end-for="momentum" hidden>Start a conversation</a>
     <button type="button" class="demo-again">Watch again</button>
   </div>
 </dialog>
@@ -1016,21 +1019,28 @@
     });
   }
 
-  // The software demo: the master video in a player over the page; it pauses on
-  // close. A phone held upright gets the tall cut. At the end, a release-updates button.
+  // The videos play in one player over the page; it pauses on close. A phone
+  // held upright gets the tall cut. At the end: the software demo offers release
+  // updates, the Momentum video (how we work) offers an email.
+  var DEMOS = {
+    software: { file: 'media/ijgb-software-demo', poster: 'media/ijgb-software-demo-thumbnail', label: 'Software demo: the It Just Gets Better software suite' },
+    momentum: { file: 'media/ijgb-momentum', poster: 'media/ijgb-momentum-poster', label: 'Momentum: how we work' }
+  };
   function setupDemo(){
     var dlg=document.getElementById('demo-dialog'), vid=document.getElementById('demo-video');
     if(!dlg||!dlg.showModal) return;
-    var end=dlg.querySelector('.demo-end'), phone=window.matchMedia('(orientation: portrait) and (max-width: 767px)'), shape='wide';
+    var end=dlg.querySelector('.demo-end'), phone=window.matchMedia('(orientation: portrait) and (max-width: 767px)'), now='software wide';
     function play(){ var p=vid.play(); if(p&&p.catch) p.catch(function(){}); }
     document.querySelectorAll('[data-demo-open]').forEach(function(b){
       b.addEventListener('click',function(){
-        var want=phone.matches?'tall':'wide';
-        if(want!==shape){
-          shape=want; dlg.classList.toggle('tall',shape==='tall');
-          var t=shape==='tall'?'-tall':'';
-          vid.poster='media/ijgb-software-demo-thumbnail'+t+'.jpg'; vid.src='media/ijgb-software-demo'+t+'.mp4';
+        var which=DEMOS[b.getAttribute('data-demo-open')]?b.getAttribute('data-demo-open'):'software',
+            shape=phone.matches?'tall':'wide', d=DEMOS[which], t=shape==='tall'?'-tall':'';
+        if(which+' '+shape!==now){
+          now=which+' '+shape; dlg.classList.toggle('tall',shape==='tall');
+          vid.poster=d.poster+t+'.jpg'; vid.src=d.file+t+'.mp4';
           vid.setAttribute('width',shape==='tall'?1080:1920); vid.setAttribute('height',shape==='tall'?1920:1080);
+          dlg.setAttribute('aria-label',d.label);
+          end.querySelectorAll('[data-end-for]').forEach(function(a){ a.hidden=a.getAttribute('data-end-for')!==which; });
           end.hidden=true;
         }
         dlg.showModal(); if(end.hidden) play();
