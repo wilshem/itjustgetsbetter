@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>It Just Gets Better LLC | Technology and Strategy Advisory</title>
   <meta name="description" content="It Just Gets Better LLC provides technology and strategy advisory services: research, analysis, partnerships, system design and implementation, and technology commercialization, plus original software." />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="It Just Gets Better LLC" />
+  <meta property="og:title" content="It Just Gets Better LLC" />
+  <meta property="og:description" content="Technology and strategy advisory." />
+  <meta property="og:url" content="https://itjustgetsbetter.org/" />
+  <meta property="og:image" content="https://itjustgetsbetter.org/media/og-logo.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The It Just Gets Better logo" />
+  <meta name="twitter:card" content="summary_large_image" />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Syne:wght@400;800&display=swap" rel="stylesheet" />
   <style>
     :root {
@@ -149,6 +159,15 @@
     .waitlist-btn { display: inline-block; font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--capital); text-decoration: none; border: 1px solid var(--capital); padding: 16px 30px; margin-bottom: 40px; transition: background 0.3s, color 0.3s; }
     .waitlist-btn:hover, .waitlist-btn:focus-visible { background: var(--capital); color: var(--bg); }
     .waitlist-btn:focus-visible { outline: 2px solid var(--capital); outline-offset: 4px; }
+    .software-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
+    .software-actions .waitlist-btn { margin-bottom: 0; }
+    button.waitlist-btn { background: none; cursor: pointer; line-height: normal; }
+    #demo-dialog { padding: 0; border: 1px solid var(--metal-4); background: var(--bg); width: min(92vw, calc(82vh * 16 / 9)); max-width: none; margin: auto; overflow: visible; }
+    #demo-dialog::backdrop { background: rgba(6, 6, 10, 0.9); }
+    #demo-dialog video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+    .demo-close { position: absolute; top: -48px; right: -6px; background: none; border: 0; color: var(--metal-2); font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; padding: 10px; transition: color 0.2s; }
+    .demo-close:hover { color: var(--metal-1); }
+    .demo-close:focus-visible { outline: 2px solid var(--capital); outline-offset: 2px; }
     .tool-soon { display: inline-block; margin-left: 12px; font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.25em; text-transform: uppercase; padding: 3px 10px; border: 1px solid currentColor; color: var(--capital); vertical-align: middle; }
     @media (prefers-reduced-motion: no-preference) {
       nav { animation: navIn 0.9s ease 0.1s both; }
@@ -384,7 +403,10 @@
       <div class="tool-desc">Strategy and operational support</div>
     </li>
   </ul>
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link" data-reveal style="--i:7">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
+  <div class="software-actions" data-reveal style="--i:7">
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
+    <button type="button" class="waitlist-btn" data-demo-open aria-haspopup="dialog">Video demo</button>
+  </div>
   <a href="https://platform.itjustgetsbetter.org" class="contact-link platform-link" hidden>Explore the software at platform.itjustgetsbetter.org</a>
 </section>
 
@@ -450,6 +472,13 @@
   <div class="footer-copy">&#x00A9; 2026 &#x00B7; It Just Gets Better LLC</div>
 </footer>
 </main>
+
+<dialog id="demo-dialog" aria-label="Video demo: the It Just Gets Better software suite">
+  <button type="button" class="demo-close">Close &#x2715;</button>
+  <video id="demo-video" controls playsinline preload="none" width="1920" height="1080" poster="media/ijgb-software-demo-thumbnail.jpg">
+    <source src="media/ijgb-software-demo.mp4" type="video/mp4" />
+  </video>
+</dialog>
 
 <script>
 (function() {
@@ -901,8 +930,21 @@
     });
   }
 
+  // "Video demo": the master video in a player over the page; it pauses on close
+  function setupDemo(){
+    var dlg=document.getElementById('demo-dialog'), vid=document.getElementById('demo-video');
+    if(!dlg||!dlg.showModal) return;
+    document.querySelectorAll('[data-demo-open]').forEach(function(b){
+      b.addEventListener('click',function(){ dlg.showModal(); var p=vid.play(); if(p&&p.catch) p.catch(function(){}); });
+    });
+    dlg.querySelector('.demo-close').addEventListener('click',function(){ dlg.close(); });
+    dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
+    dlg.addEventListener('close',function(){ vid.pause(); });
+  }
+
   window.addEventListener('load',function(){
     setupLegend();
+    setupDemo();
     buildMap();
     buildServiceArt();
     document.querySelectorAll('.waitlist-link').forEach(function(a){ a.href=WAITLIST_URL; });
