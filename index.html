@@ -179,6 +179,41 @@
     .demo-again { background: none; border: 0; color: var(--metal-2); font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; padding: 10px; }
     .demo-again:hover { color: var(--metal-1); }
     .demo-again:focus-visible { outline: 2px solid var(--capital); outline-offset: 2px; }
+    #updates-dialog { padding: 0; border: 1px solid var(--metal-4); background: var(--bg); color: var(--metal-1); width: min(560px, calc(100vw - 32px)); max-width: none; max-height: calc(100dvh - 32px); margin: auto; overflow: auto; }
+    #updates-dialog::backdrop { background: rgba(6, 6, 10, 0.92); }
+    .updates-card { position: relative; padding: 44px 44px 36px; }
+    .updates-card .demo-close { top: 12px; right: 12px; }
+    .updates-kicker { font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--capital); margin: 0 0 14px; }
+    .updates-card h2 { font-family: "Cormorant Garamond", serif; font-weight: 300; font-size: 38px; line-height: 1.1; margin: 0 0 14px; color: var(--metal-1); }
+    .updates-intro { font-family: "Cormorant Garamond", serif; font-size: 19px; line-height: 1.45; color: var(--metal-2); margin: 0 0 28px; }
+    .updates-label, .updates-card legend { display: block; font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--metal-2); margin: 0 0 10px; padding: 0; }
+    .updates-label .opt, .updates-card legend .opt { color: var(--metal-3); letter-spacing: 0.12em; }
+    .updates-card input[type=email], .updates-card input[type=text] { width: 100%; background: transparent; border: 0; border-bottom: 1px solid var(--metal-3); border-radius: 0; color: var(--metal-1); font-family: "Cormorant Garamond", serif; font-size: 20px; padding: 8px 0 10px; outline: none; }
+    .updates-card input[type=email]:focus, .updates-card input[type=text]:focus { border-bottom-color: var(--capital); }
+    .updates-card fieldset { border: 0; margin: 30px 0 0; padding: 0; min-width: 0; }
+    .updates-chips { display: flex; flex-wrap: wrap; gap: 10px; }
+    .updates-chip { position: relative; }
+    .updates-chip input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+    .updates-chip span { display: block; border: 1px solid var(--metal-4); padding: 10px 16px; font-family: "Cormorant Garamond", serif; font-size: 18px; color: var(--metal-2); cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s; }
+    .updates-chip span:hover { border-color: var(--metal-3); color: var(--metal-1); }
+    .updates-chip input:checked + span { border-color: var(--capital); color: var(--metal-1); background: rgba(196, 164, 90, 0.1); }
+    .updates-chip input:focus-visible + span { outline: 2px solid var(--capital); outline-offset: 2px; }
+    .updates-other { margin-top: 16px; }
+    .updates-other[hidden] { display: none; }
+    .updates-trap { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+    .updates-submit { display: block; width: 100%; margin: 34px 0 18px; background: var(--capital); color: var(--bg); border: 1px solid var(--capital); font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; padding: 18px; cursor: pointer; transition: background 0.3s, color 0.3s; }
+    .updates-submit:hover, .updates-submit:focus-visible { background: none; color: var(--capital); }
+    .updates-submit:focus-visible { outline: 2px solid var(--capital); outline-offset: 4px; }
+    .updates-submit[disabled] { opacity: 0.6; cursor: default; }
+    .updates-error { font-family: "Cormorant Garamond", serif; font-size: 17px; color: #e07a6e; margin: -6px 0 16px; }
+    .updates-error a { color: inherit; }
+    .updates-fine { font-family: "Cormorant Garamond", serif; font-size: 15px; line-height: 1.45; color: var(--metal-text); margin: 0; }
+    .updates-fine a { color: var(--metal-2); }
+    .updates-done { text-align: center; padding: 40px 0 20px; }
+    .updates-done h2 { font-size: 42px; }
+    .updates-done .updates-intro { margin: 0; }
+    .updates-tick { width: 46px; height: 46px; border: 1px solid var(--capital); border-radius: 50%; margin: 0 auto 22px; display: flex; align-items: center; justify-content: center; color: var(--capital); font-family: "Syne", sans-serif; font-size: 20px; }
+    @media (max-width: 600px) { .updates-card { padding: 48px 22px 28px; } .updates-card h2 { font-size: 32px; } }
     .demo-close { position: absolute; top: -48px; right: -6px; background: none; border: 0; color: var(--metal-2); font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; padding: 10px; transition: color 0.2s; }
     .demo-close:hover { color: var(--metal-1); }
     .demo-close:focus-visible { outline: 2px solid var(--capital); outline-offset: 2px; }
@@ -495,6 +530,43 @@
   <div class="demo-end" hidden>
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
     <button type="button" class="demo-again">Watch again</button>
+  </div>
+</dialog>
+
+<dialog id="updates-dialog" aria-labelledby="updates-title">
+  <div class="updates-card">
+    <button type="button" class="demo-close">Close &#x2715;</button>
+    <form id="updates-form" novalidate>
+      <p class="updates-kicker">Release updates</p>
+      <h2 id="updates-title">Hear when the tools are ready</h2>
+      <p class="updates-intro">Our tools keep your organization's knowledge when people leave. No spam. Unsubscribe anytime.</p>
+      <label class="updates-label" for="updates-email">Email address</label>
+      <input type="email" id="updates-email" name="email" autocomplete="email" required autofocus />
+      <fieldset>
+        <legend>I work with a <span class="opt">(optional)</span></legend>
+        <div class="updates-chips">
+          <label class="updates-chip"><input type="radio" name="org" value="Nonprofit" /><span>Nonprofit</span></label>
+          <label class="updates-chip"><input type="radio" name="org" value="Small or family business" /><span>Small or family business</span></label>
+          <label class="updates-chip"><input type="radio" name="org" value="Sales organization" /><span>Sales organization</span></label>
+          <label class="updates-chip"><input type="radio" name="org" value="Law firm" /><span>Law firm</span></label>
+          <label class="updates-chip"><input type="radio" name="org" value="Public agency" /><span>Public agency</span></label>
+          <label class="updates-chip"><input type="radio" name="org" value="__other_option__" /><span>Other</span></label>
+        </div>
+        <div class="updates-other" hidden>
+          <label class="sr-only" for="updates-other">Other: the type of organization</label>
+          <input type="text" id="updates-other" name="other" placeholder="Type of organization" maxlength="120" />
+        </div>
+      </fieldset>
+      <div class="updates-trap" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
+      <button type="submit" class="updates-submit">Join the list</button>
+      <p class="updates-error" role="alert" hidden></p>
+      <p class="updates-fine">We use your email only to send release updates about our tools, and your answer above only to learn which organizations want them. We do not sell or share your information. To have it deleted, write to <a href="mailto:better@itjustgetsbetter.org">better@itjustgetsbetter.org</a>.</p>
+    </form>
+    <div class="updates-done" hidden>
+      <div class="updates-tick" aria-hidden="true">&#10003;</div>
+      <h2 tabindex="-1">You're on the list</h2>
+      <p class="updates-intro">We'll write when there's news about the tools.</p>
+    </div>
   </div>
 </dialog>
 
@@ -976,9 +1048,63 @@
     dlg.addEventListener('close',function(){ vid.pause(); });
   }
 
+  // "Get release updates": our own form in a pop-up. It posts to the Google Form,
+  // so sign-ups still land in its Google Sheet. Google sends no readable reply
+  // to other sites, so a sent request counts as done. Without the dialog, the
+  // links open the Google Form itself.
+  var FORM_POST = 'https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/formResponse';
+  function setupUpdates(){
+    var dlg=document.getElementById('updates-dialog');
+    if(!dlg||!dlg.showModal||!window.fetch||!window.URLSearchParams) return;
+    var form=document.getElementById('updates-form'), done=dlg.querySelector('.updates-done'),
+        email=document.getElementById('updates-email'), other=dlg.querySelector('.updates-other'),
+        otherIn=document.getElementById('updates-other'), err=dlg.querySelector('.updates-error'),
+        send=dlg.querySelector('.updates-submit'), demo=document.getElementById('demo-dialog');
+    function fail(msg){ err.innerHTML=msg; err.hidden=false; }
+    function reset(){ form.reset(); form.hidden=false; done.hidden=true; other.hidden=true; err.hidden=true; send.disabled=false; send.textContent='Join the list'; }
+    document.querySelectorAll('.waitlist-link').forEach(function(a){
+      var tab=a.querySelector('.sr-only'); if(tab) tab.remove();
+      a.removeAttribute('target'); a.setAttribute('aria-haspopup','dialog');
+      a.addEventListener('click',function(e){
+        e.preventDefault();
+        if(demo&&demo.open) demo.close();
+        if(!form.hidden&&done.hidden) err.hidden=true; else reset();
+        dlg.showModal(); email.focus();
+      });
+    });
+    dlg.querySelector('.demo-close').addEventListener('click',function(){ dlg.close(); });
+    dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
+    form.addEventListener('input',function(){ err.hidden=true; });
+    form.addEventListener('change',function(e){
+      if(e.target.name!=='org') return;
+      other.hidden=e.target.value!=='__other_option__';
+      if(!other.hidden) otherIn.focus();
+    });
+    form.addEventListener('submit',function(e){
+      e.preventDefault(); err.hidden=true;
+      var addr=email.value.trim();
+      if(!addr||!email.checkValidity()){ fail('Please enter a valid email address.'); email.focus(); return; }
+      function finish(){ form.hidden=true; done.hidden=false; done.querySelector('h2').focus(); }
+      if(form.website.value){ finish(); return; }
+      var body=new URLSearchParams(); body.append('entry.195740844',addr);
+      var org=form.querySelector('input[name=org]:checked');
+      if(org&&org.value==='__other_option__'&&!otherIn.value.trim()){ fail('Please type the kind of organization, or pick another option.'); otherIn.focus(); return; }
+      if(org){
+        body.append('entry.260809569',org.value);
+        if(org.value==='__other_option__') body.append('entry.260809569.other_option_response',otherIn.value.trim());
+      }
+      send.disabled=true; send.textContent='Sending\u2026';
+      fetch(FORM_POST,{method:'POST',mode:'no-cors',body:body}).then(finish,function(){
+        send.disabled=false; send.textContent='Join the list';
+        fail('That didn\u2019t go through. Please try again, or <a href="'+WAITLIST_URL+'" target="_blank" rel="noopener">use the form on Google</a>.');
+      });
+    });
+  }
+
   window.addEventListener('load',function(){
     setupLegend();
     setupDemo();
+    setupUpdates();
     buildMap();
     buildServiceArt();
     document.querySelectorAll('.waitlist-link').forEach(function(a){ a.href=WAITLIST_URL; });
