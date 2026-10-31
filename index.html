@@ -162,9 +162,23 @@
     .software-actions { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 40px; }
     .software-actions .waitlist-btn { margin-bottom: 0; }
     button.waitlist-btn { background: none; cursor: pointer; line-height: normal; }
-    #demo-dialog { padding: 0; border: 1px solid var(--metal-4); background: var(--bg); width: min(92vw, calc(82vh * 16 / 9)); max-width: none; margin: auto; overflow: visible; }
+    .waitlist-btn.primary { background: var(--capital); color: var(--bg); }
+    .waitlist-btn.primary:hover, .waitlist-btn.primary:focus-visible { background: none; color: var(--capital); }
+    .play-mark { display: inline-block; width: 0; height: 0; border-style: solid; border-width: 5px 0 5px 8px; border-color: transparent transparent transparent currentColor; margin-right: 12px; vertical-align: 0; }
+    #demo-dialog { padding: 0; border: 1px solid var(--metal-4); background: var(--bg); width: min(92vw, calc((100vh - 120px) * 16 / 9)); width: min(92vw, calc((100dvh - 120px) * 16 / 9)); max-width: none; margin: auto; overflow: visible; }
     #demo-dialog::backdrop { background: rgba(6, 6, 10, 0.9); }
     #demo-dialog video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+    #demo-dialog.tall { width: min(92vw, calc((100vh - 120px) * 9 / 16)); width: min(92vw, calc((100dvh - 120px) * 9 / 16)); }
+    #demo-dialog.tall video { aspect-ratio: 9 / 16; }
+    .demo-end { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; background: rgba(6, 6, 10, 0.82); text-align: center; padding: 24px; }
+    .demo-end[hidden] { display: none; }
+    .demo-end .waitlist-btn { margin-bottom: 0; }
+    #demo-dialog.tall .demo-end .waitlist-btn { padding: 16px 18px; letter-spacing: 0.16em; white-space: nowrap; }
+    .label-short { display: none; }
+    @media (max-width: 600px) { .software-actions { flex-direction: column; } .software-actions .waitlist-btn { text-align: center; } .label-long { display: none; } .label-short { display: inline; } }
+    .demo-again { background: none; border: 0; color: var(--metal-2); font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; padding: 10px; }
+    .demo-again:hover { color: var(--metal-1); }
+    .demo-again:focus-visible { outline: 2px solid var(--capital); outline-offset: 2px; }
     .demo-close { position: absolute; top: -48px; right: -6px; background: none; border: 0; color: var(--metal-2); font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; cursor: pointer; padding: 10px; transition: color 0.2s; }
     .demo-close:hover { color: var(--metal-1); }
     .demo-close:focus-visible { outline: 2px solid var(--capital); outline-offset: 2px; }
@@ -404,8 +418,8 @@
     </li>
   </ul>
   <div class="software-actions" data-reveal style="--i:7">
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
-    <button type="button" class="waitlist-btn" data-demo-open aria-haspopup="dialog">Video demo</button>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
+    <button type="button" class="waitlist-btn" data-demo-open aria-haspopup="dialog"><span class="play-mark" aria-hidden="true"></span><span class="label-long">Watch the 90-second software demo</span><span class="label-short">90-sec software demo</span></button>
   </div>
   <a href="https://platform.itjustgetsbetter.org" class="contact-link platform-link" hidden>Explore the software at platform.itjustgetsbetter.org</a>
 </section>
@@ -473,11 +487,15 @@
 </footer>
 </main>
 
-<dialog id="demo-dialog" aria-label="Video demo: the It Just Gets Better software suite">
+<dialog id="demo-dialog" aria-label="Software demo: the It Just Gets Better software suite">
   <button type="button" class="demo-close">Close &#x2715;</button>
   <video id="demo-video" controls playsinline preload="none" width="1920" height="1080" poster="media/ijgb-software-demo-thumbnail.jpg">
     <source src="media/ijgb-software-demo.mp4" type="video/mp4" />
   </video>
+  <div class="demo-end" hidden>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
+    <button type="button" class="demo-again">Watch again</button>
+  </div>
 </dialog>
 
 <script>
@@ -930,13 +948,29 @@
     });
   }
 
-  // "Video demo": the master video in a player over the page; it pauses on close
+  // The software demo: the master video in a player over the page; it pauses on
+  // close. A phone held upright gets the tall cut. At the end, a release-updates button.
   function setupDemo(){
     var dlg=document.getElementById('demo-dialog'), vid=document.getElementById('demo-video');
     if(!dlg||!dlg.showModal) return;
+    var end=dlg.querySelector('.demo-end'), phone=window.matchMedia('(orientation: portrait) and (max-width: 767px)'), shape='wide';
+    function play(){ var p=vid.play(); if(p&&p.catch) p.catch(function(){}); }
     document.querySelectorAll('[data-demo-open]').forEach(function(b){
-      b.addEventListener('click',function(){ dlg.showModal(); var p=vid.play(); if(p&&p.catch) p.catch(function(){}); });
+      b.addEventListener('click',function(){
+        var want=phone.matches?'tall':'wide';
+        if(want!==shape){
+          shape=want; dlg.classList.toggle('tall',shape==='tall');
+          var t=shape==='tall'?'-tall':'';
+          vid.poster='media/ijgb-software-demo-thumbnail'+t+'.jpg'; vid.src='media/ijgb-software-demo'+t+'.mp4';
+          vid.setAttribute('width',shape==='tall'?1080:1920); vid.setAttribute('height',shape==='tall'?1920:1080);
+          end.hidden=true;
+        }
+        dlg.showModal(); if(end.hidden) play();
+      });
     });
+    vid.addEventListener('ended',function(){ end.hidden=false; });
+    vid.addEventListener('play',function(){ end.hidden=true; });
+    dlg.querySelector('.demo-again').addEventListener('click',function(){ end.hidden=true; vid.currentTime=0; play(); });
     dlg.querySelector('.demo-close').addEventListener('click',function(){ dlg.close(); });
     dlg.addEventListener('click',function(e){ if(e.target===dlg) dlg.close(); });
     dlg.addEventListener('close',function(){ vid.pause(); });
