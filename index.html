@@ -154,6 +154,12 @@
     .tools-list li { display: grid; grid-template-columns: minmax(260px, 1fr) 1.4fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--metal-4); }
     .tools-list li:first-child { border-top: 1px solid var(--metal-4); }
     .tool-name { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; color: var(--metal-1); }
+    .tool-play { background: none; border: 0; padding: 0; cursor: pointer; text-align: left; line-height: inherit; }
+    .tool-play-mark { display: inline-block; width: 0; height: 0; margin-left: 12px; vertical-align: middle; border-style: solid; border-width: 6px 0 6px 10px; border-color: transparent transparent transparent var(--capital); opacity: .6; transition: opacity .3s ease; }
+    .tool-play:hover, .tool-play:focus-visible { color: #fff; }
+    .tool-play:hover .tool-play-mark, .tool-play:focus-visible .tool-play-mark { opacity: 1; }
+    @media (max-width: 600px) { .tools-list .tool-by { display: block; margin: 6px 0 0; } }
+    .tool-play:focus-visible { outline: 1px solid var(--capital); outline-offset: 4px; }
     .tool-by { font-family: "Syne", sans-serif; font-size: 12px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--metal-text); margin-left: 10px; }
     .tool-desc { font-family: "Cormorant Garamond", serif; font-size: 19px; color: var(--metal-2); }
     .waitlist-btn { display: inline-block; font-family: "Syne", sans-serif; font-size: 13px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--capital); text-decoration: none; border: 1px solid var(--capital); padding: 16px 30px; margin-bottom: 40px; transition: background 0.3s, color 0.3s; }
@@ -434,19 +440,19 @@
   <p class="software-intro" data-reveal style="--i:1">Original software designed and developed by It Just Gets Better.</p>
   <ul class="tools-list">
     <li data-reveal style="--i:2">
-      <div><span class="tool-name">Integrity</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div><button type="button" class="tool-name tool-play" data-demo-open="integrity" aria-haspopup="dialog">Integrity<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">Your data, protected and separate</div>
     </li>
     <li data-reveal style="--i:3">
-      <div><span class="tool-name">Continuity</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div><button type="button" class="tool-name tool-play" data-demo-open="continuity" aria-haspopup="dialog">Continuity<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">People, ownership, and funding through change</div>
     </li>
     <li data-reveal style="--i:4">
-      <div><span class="tool-name">Memory</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div><button type="button" class="tool-name tool-play" data-demo-open="memory" aria-haspopup="dialog">Memory<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">Find and produce your records</div>
     </li>
     <li data-reveal style="--i:5">
-      <div><span class="tool-name">Clarity</span><span class="tool-by">by It Just Gets Better</span></div>
+      <div><button type="button" class="tool-name tool-play" data-demo-open="clarity" aria-haspopup="dialog">Clarity<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">Know what your contracts say<span class="tool-soon">Available soon</span></div>
     </li>
   </ul>
@@ -1020,11 +1026,15 @@
   }
 
   // The videos play in one player over the page; it pauses on close. A phone
-  // held upright gets the tall cut. At the end: the software demo offers release
-  // updates, the Momentum video (how we work) offers an email.
+  // held upright gets the tall cut. At the end: the software videos (the demo and
+  // each tool, opened from its name) offer release updates; Momentum, an email.
   var DEMOS = {
     software: { file: 'media/ijgb-software-demo', poster: 'media/ijgb-software-demo-thumbnail', label: 'Software demo: the It Just Gets Better software suite' },
-    momentum: { file: 'media/ijgb-momentum', poster: 'media/ijgb-momentum-poster', label: 'Momentum: how we work' }
+    momentum: { file: 'media/ijgb-momentum', poster: 'media/ijgb-momentum-poster', label: 'Momentum: how we work' },
+    integrity: { file: 'media/ijgb-integrity', poster: 'media/ijgb-integrity-poster', label: 'Integrity by It Just Gets Better' },
+    memory: { file: 'media/ijgb-memory', poster: 'media/ijgb-memory-poster', label: 'Memory by It Just Gets Better' },
+    continuity: { file: 'media/ijgb-continuity', poster: 'media/ijgb-continuity-poster', label: 'Continuity by It Just Gets Better' },
+    clarity: { file: 'media/ijgb-clarity', poster: 'media/ijgb-clarity-poster', label: 'Clarity by It Just Gets Better' }
   };
   function setupDemo(){
     var dlg=document.getElementById('demo-dialog'), vid=document.getElementById('demo-video');
@@ -1040,7 +1050,7 @@
           vid.poster=d.poster+t+'.jpg'; vid.src=d.file+t+'.mp4';
           vid.setAttribute('width',shape==='tall'?1080:1920); vid.setAttribute('height',shape==='tall'?1920:1080);
           dlg.setAttribute('aria-label',d.label);
-          end.querySelectorAll('[data-end-for]').forEach(function(a){ a.hidden=a.getAttribute('data-end-for')!==which; });
+          end.querySelectorAll('[data-end-for]').forEach(function(a){ a.hidden=a.getAttribute('data-end-for')!==(which==='momentum'?'momentum':'software'); });
           end.hidden=true;
         }
         dlg.showModal(); if(end.hidden) play();
