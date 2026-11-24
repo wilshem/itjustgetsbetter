@@ -150,7 +150,9 @@
       .js .svc:hover .svc-back { opacity: 1; }
     }
     .software-intro { font-family: "Cormorant Garamond", serif; font-size: clamp(22px, 2.3vw, 32px); font-weight: 300; line-height: 1.5; color: var(--metal-2); max-width: 880px; margin-bottom: 48px; }
-    .tools-list { list-style: none; max-width: 880px; margin-bottom: 56px; }
+    .tools-list { list-style: none; max-width: 880px; margin-bottom: 32px; }
+    .software-foundation { font-family: "Cormorant Garamond", serif; font-size: 19px; color: var(--metal-2); max-width: 880px; margin-bottom: 56px; }
+    .software-foundation strong { font-weight: 400; color: var(--metal-1); }
     .tools-list li { display: grid; grid-template-columns: minmax(260px, 1fr) 1.4fr; gap: 24px; align-items: baseline; padding: 22px 0; border-bottom: 1px solid var(--metal-4); }
     .tools-list li:first-child { border-top: 1px solid var(--metal-4); }
     .tool-name { font-family: "Cormorant Garamond", serif; font-size: 28px; font-weight: 400; color: var(--metal-1); }
@@ -440,22 +442,19 @@
   <p class="software-intro" data-reveal style="--i:1">Original software designed and developed by It Just Gets Better.</p>
   <ul class="tools-list">
     <li data-reveal style="--i:2">
-      <div><button type="button" class="tool-name tool-play" data-demo-open="integrity" aria-haspopup="dialog">Integrity<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
-      <div class="tool-desc">Your data, protected and separate</div>
-    </li>
-    <li data-reveal style="--i:3">
       <div><button type="button" class="tool-name tool-play" data-demo-open="continuity" aria-haspopup="dialog">Continuity<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">People, ownership, and funding through change</div>
     </li>
-    <li data-reveal style="--i:4">
+    <li data-reveal style="--i:3">
       <div><button type="button" class="tool-name tool-play" data-demo-open="memory" aria-haspopup="dialog">Memory<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">Find and produce your records</div>
     </li>
-    <li data-reveal style="--i:5">
+    <li data-reveal style="--i:4">
       <div><button type="button" class="tool-name tool-play" data-demo-open="clarity" aria-haspopup="dialog">Clarity<span class="tool-play-mark" aria-hidden="true"></span><span class="sr-only"> (30-second video)</span></button><span class="tool-by">by It Just Gets Better</span></div>
       <div class="tool-desc">Know what your contracts say<span class="tool-soon">Available soon</span></div>
     </li>
   </ul>
+  <p class="software-foundation" data-reveal style="--i:5"><strong>Integrity</strong>: the protection every suite runs on.</p>
   <div class="software-actions" data-reveal style="--i:7">
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeD6XZMnTvzChpaAvW8YE8f88Fjz--WtpWOJiZN5A5GEecINg/viewform" target="_blank" rel="noopener" class="waitlist-btn waitlist-link primary">Get release updates<span class="sr-only"> (opens in a new tab)</span></a>
     <button type="button" class="waitlist-btn" data-demo-open="software" aria-haspopup="dialog"><span class="play-mark" aria-hidden="true"></span><span class="label-long">Watch the 90-second software demo</span><span class="label-short">90-sec software demo</span></button>
@@ -565,7 +564,7 @@
       <div class="updates-trap" aria-hidden="true"><label>Leave this empty <input type="text" name="website" tabindex="-1" autocomplete="off" /></label></div>
       <button type="submit" class="updates-submit">Join the list</button>
       <p class="updates-error" role="alert" hidden></p>
-      <p class="updates-fine">We use your email only to send release updates about our tools, and your answer above only to learn which organizations want them. We do not sell or share your information. To have it deleted, write to <a href="mailto:better@itjustgetsbetter.org">better@itjustgetsbetter.org</a>.</p>
+      <p class="updates-fine">We use your email only to send release updates about our tools, and your answer above only to learn which organizations want them. We do not sell your information. Sign-ups are stored in Google Forms and Google Sheets. To have it deleted, write to <a href="mailto:better@itjustgetsbetter.org">better@itjustgetsbetter.org</a>.</p>
     </form>
     <div class="updates-done" hidden>
       <div class="updates-tick" aria-hidden="true">&#10003;</div>
@@ -1031,7 +1030,6 @@
   var DEMOS = {
     software: { file: 'media/ijgb-software-demo', poster: 'media/ijgb-software-demo-thumbnail', label: 'Software demo: the It Just Gets Better software suite' },
     momentum: { file: 'media/ijgb-momentum', poster: 'media/ijgb-momentum-poster', label: 'Momentum: how we work' },
-    integrity: { file: 'media/ijgb-integrity', poster: 'media/ijgb-integrity-poster', label: 'Integrity by It Just Gets Better' },
     memory: { file: 'media/ijgb-memory', poster: 'media/ijgb-memory-poster', label: 'Memory by It Just Gets Better' },
     continuity: { file: 'media/ijgb-continuity', poster: 'media/ijgb-continuity-poster', label: 'Continuity by It Just Gets Better' },
     clarity: { file: 'media/ijgb-clarity', poster: 'media/ijgb-clarity-poster', label: 'Clarity by It Just Gets Better' }
