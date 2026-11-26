@@ -1338,6 +1338,18 @@
   }
   window.__secStep = function(n, open){ pinned = true; show(n); if (open) box.classList.add('gate-open'); };
   show(1);
+  // size the caption area to the tallest step's captions at this width, so nothing below moves between steps
+  var capBox = box.querySelector('.st-caption');
+  function capsFor(n){ caps.forEach(function(c){ c.style.display = c.getAttribute('data-on').split(' ').indexOf(String(n)) >= 0 ? 'block' : 'none'; }); }
+  function fitCaptions(){
+    capBox.style.minHeight = '0px'; var max = 0;
+    for (var n = 1; n <= 4; n++){ capsFor(n); max = Math.max(max, capBox.offsetHeight); }
+    capsFor(step); if (max > 0) capBox.style.minHeight = max + 'px'; else capBox.style.minHeight = '';
+  }
+  var fitQueued = false;
+  window.addEventListener('resize', function(){ if (!fitQueued){ fitQueued = true; requestAnimationFrame(function(){ fitQueued = false; fitCaptions(); }); } });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitCaptions);
+  fitCaptions();
   if (!reduce.matches) { timer = setInterval(next, STEP_MS); requestAnimationFrame(frame); }
 })();
 </script>
