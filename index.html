@@ -1343,7 +1343,7 @@
   function capsFor(n){ caps.forEach(function(c){ c.style.display = c.getAttribute('data-on').split(' ').indexOf(String(n)) >= 0 ? 'block' : 'none'; }); }
   function fitCaptions(){
     capBox.style.minHeight = '0px'; var max = 0;
-    for (var n = 1; n <= 4; n++){ capsFor(n); max = Math.max(max, capBox.offsetHeight); }
+    for (var n = 1; n <= 4; n++){ capsFor(n); max = Math.max(max, Math.ceil(capBox.getBoundingClientRect().height)); }
     capsFor(step); if (max > 0) capBox.style.minHeight = max + 'px'; else capBox.style.minHeight = '';
   }
   var fitQueued = false;
